@@ -61,11 +61,26 @@ export default function InquireForm() {
       });
 
       if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(
-          data?.errors?.[0]?.message ||
-            `Submission failed (${response.status}). Please try again.`,
-        );
+        const text = await response.text();
+        let detail = text;
+        try {
+          const data = JSON.parse(text);
+          if (data?.errors?.length) {
+            detail = data.errors
+              .map((e: { message?: string; field?: string; code?: string }) =>
+                [e.code, e.field, e.message].filter(Boolean).join(": "),
+              )
+              .join(" | ");
+          } else if (data?.error) {
+            detail = data.error;
+          }
+        } catch {
+          /* keep raw text */
+        }
+        // Log the full response for debugging
+        // eslint-disable-next-line no-console
+        console.log("Formspree error response:", text);
+        throw new Error(`HTTP ${response.status}: ${detail.slice(0, 220)}`);
       }
 
       setRefId(reference);
