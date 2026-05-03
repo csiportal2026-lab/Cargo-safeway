@@ -4,7 +4,7 @@ import SiteHeader from "./components/SiteHeader";
 export default function Home() {
  return (
  <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center overflow-x-auto px-4 sm:px-6 py-4 sm:py-6 transition-colors">
- <div className="relative card-canvas w-[1200px] h-[675px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ <div className="relative card-canvas w-[1080px] h-[608px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
  {/* Ship background — overflows card edges for that dramatic crop */}
  <Image
  src="/hero-ship.webp"
