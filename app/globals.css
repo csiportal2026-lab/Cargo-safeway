@@ -23,6 +23,15 @@ body {
   font-family: var(--font-jakarta), Arial, Helvetica, sans-serif;
 }
 
+/* Pixel-locked design canvas: card is 1280x720 internally,
+   scales as a single unit to fill the viewport on bigger screens.
+   Below the design size, stays at natural size (may scroll). */
+@media (min-width: 1024px) {
+  .card-canvas {
+    zoom: max(1, min(calc((100vw - 32px) / 1280), calc((100vh - 32px) / 720)));
+  }
+}
+
 @keyframes sweep-shine {
   0% {
     background-position: 0% 0;

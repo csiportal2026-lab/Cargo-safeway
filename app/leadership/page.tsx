@@ -3,33 +3,33 @@ import SiteHeader from "../components/SiteHeader";
 
 export default function AboutPage() {
  return (
- <main className="h-screen w-full bg-[#f3f4f6] flex items-stretch justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
- <div className="relative w-full max-w-[1600px] bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center overflow-x-auto px-4 sm:px-6 py-4 sm:py-6 transition-colors">
+ <div className="relative card-canvas w-[1280px] h-[720px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
  <SiteHeader />
 
- <section className="relative z-10 flex-1 min-h-0 px-6 sm:px-12 pb-10 pt-2 overflow-y-auto">
- <div className="grid grid-cols-1 lg:grid-cols-[minmax(280px,420px)_1fr] gap-8 lg:gap-12 items-center h-full">
- {/* CEO portrait — appears centered, then slides left */}
- <div className="relative mx-auto lg:mx-0 w-full max-w-[400px] z-10 about-split">
+ <section className="relative z-10 flex-1 min-h-0 px-6 sm:px-12 pb-8 pt-2">
+ <div className="grid grid-cols-1 lg:grid-cols-[minmax(380px,520px)_1fr] gap-10 lg:gap-16 items-stretch h-full">
+ {/* CEO portrait — fills its column edge to edge */}
+ <div className="relative w-full h-full z-10 about-split overflow-hidden">
  <Image
  src="/ceo.webp"
  alt="Reynaldo D. Casareo, President"
- width={900}
- height={900}
+ fill
  priority
- className="w-full aspect-square object-cover object-top"
+ sizes="(min-width: 1024px) 520px, 100vw"
+ className="object-cover object-top"
  />
  </div>
 
- {/* Message — reveals from behind, paragraphs blur-in */}
- <div className="relative z-0 form-reveal">
- <h1 className="text-[clamp(28px,4vw,48px)] leading-[1.05] font-extrabold tracking-[-0.025em] text-neutral-900">
+ {/* Message — vertically centered within the stretched column */}
+ <div className="relative z-0 flex flex-col justify-center form-reveal">
+ <h1 className="text-[clamp(40px,4.6vw,68px)] leading-[1.05] font-extrabold tracking-[-0.025em] text-neutral-900">
  Built on <span className="sweep-text">Trust</span>.
  <br />
  Powered by People.
  </h1>
 
- <div className="mt-5 space-y-3 text-[clamp(13px,1.05vw,14.5px)] leading-[1.65] text-neutral-700 max-w-[560px]">
+ <div className="mt-7 space-y-4 text-[clamp(15px,1.25vw,20px)] leading-[1.6] text-neutral-700 max-w-[720px]">
  <p className="blur-in-1">
  Cargo Safeway began with a single conviction — that the
  Filipino seafarer is among the finest in the world, and
@@ -51,15 +51,15 @@ export default function AboutPage() {
  </p>
  </div>
 
- <div className="mt-6 flex items-center gap-4 blur-in-4">
+ <div className="mt-9 flex items-center gap-5 blur-in-4">
  <span
- className="text-[28px] font-medium text-[#15803d]"
+ className="text-[clamp(32px,2.8vw,44px)] font-medium text-[#15803d] leading-none"
  style={{ fontFamily: "'Brush Script MT', cursive" }}
  >
  R. D. Casareo
  </span>
- <span className="h-px w-10 bg-neutral-300" />
- <span className="text-[12px] text-neutral-500">
+ <span className="h-px w-14 bg-neutral-300" />
+ <span className="text-[clamp(13px,1vw,15px)] text-neutral-500">
  Reynaldo D. Casareo, President
  </span>
  </div>
