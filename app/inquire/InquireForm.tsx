@@ -217,7 +217,7 @@ export default function InquireForm() {
 
   return (
     <form className="space-y-3 h-full" onSubmit={handleSubmit}>
-      <div className="grid grid-cols-[1fr_160px] gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_160px] gap-3">
         <FormField
           label="Full Name"
           name="name"
@@ -245,7 +245,7 @@ export default function InquireForm() {
         />
       </div>
 
-      <div className="grid grid-cols-[1fr_160px] gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_160px] gap-3">
         <FormField
           label="Email"
           name="email"
@@ -297,7 +297,7 @@ export default function InquireForm() {
         </div>
       </div>
 
-      <div className="grid grid-cols-[1fr_160px] gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_160px] gap-3">
        <div>
         <label
           htmlFor="position"

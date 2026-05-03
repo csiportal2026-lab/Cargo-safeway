@@ -39,12 +39,38 @@ function CountUp({
 
 export default function FleetExplorer() {
   return (
-    <div className="relative py-16 sm:py-24">
-      {/* Triptych: stat — title — stat */}
-      <div className="grid grid-cols-3 items-center gap-2 sm:gap-8">
+    <div className="relative py-12 sm:py-24">
+      {/* Mobile: stacked. Desktop: triptych. */}
+      <div className="flex flex-col items-center gap-6 sm:hidden">
+        <h1 className="text-[72px] font-extrabold tracking-[-0.05em] text-neutral-900 leading-[0.88] text-center fade-in-up fade-in-up-3">
+          Fleet
+        </h1>
+        <div className="flex items-center gap-8 fade-in-up fade-in-up-4">
+          <div className="flex flex-col items-center">
+            <div className="text-[36px] font-extrabold tracking-[-0.05em] text-[#15803d] leading-none">
+              <CountUp to={TOTAL_VESSELS} />
+            </div>
+            <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-neutral-500">
+              Vessels
+            </div>
+          </div>
+          <span aria-hidden className="h-10 w-px bg-neutral-200" />
+          <div className="flex flex-col items-center">
+            <div className="text-[36px] font-extrabold tracking-[-0.05em] text-[#15803d] leading-none">
+              <CountUp to={TOTAL_CLASSES} />
+            </div>
+            <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-neutral-500 whitespace-nowrap">
+              Ship Classes
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Triptych: stat — title — stat (desktop only) */}
+      <div className="hidden sm:grid grid-cols-3 items-center gap-8">
         <Stat value={TOTAL_VESSELS} label="Vessels" align="right" delay={2} />
 
-        <h1 className="text-[64px] sm:text-[128px] font-extrabold tracking-[-0.05em] text-neutral-900 leading-[0.88] text-center fade-in-up fade-in-up-3">
+        <h1 className="text-[128px] font-extrabold tracking-[-0.05em] text-neutral-900 leading-[0.88] text-center fade-in-up fade-in-up-3">
           Fleet
         </h1>
 
@@ -80,7 +106,7 @@ function Stat({
   const delayCls = `fade-in-up-${delay}`;
   return (
     <div className={`flex flex-col ${alignCls} fade-in-up ${delayCls}`}>
-      <div className="text-[44px] sm:text-[92px] font-extrabold tracking-[-0.05em] text-[#15803d] leading-none">
+      <div className="text-[30px] sm:text-[92px] font-extrabold tracking-[-0.05em] text-[#15803d] leading-none">
         <CountUp to={value} />
       </div>
       <div

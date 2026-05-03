@@ -5,8 +5,22 @@ import SiteHeader from "./components/SiteHeader";
 export default function Home() {
  return (
  <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
- <div className="relative card-canvas w-full max-w-[1200px] lg:w-[1123px] lg:h-[632px] lg:shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
- {/* Ship background — overflows card edges for that dramatic crop */}
+ <div className="relative card-canvas card-canvas-locked w-full max-w-[1200px] lg:w-[1123px] lg:h-[632px] lg:shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ {/* Hairline navigational grid — chart aesthetic, mobile + visible behind everything */}
+ <svg
+ aria-hidden
+ className="pointer-events-none absolute inset-0 z-0 w-full h-full lg:hidden"
+ preserveAspectRatio="none"
+ xmlns="http://www.w3.org/2000/svg"
+ >
+ <defs>
+ <pattern id="chart-grid-home" width="56" height="56" patternUnits="userSpaceOnUse">
+ <path d="M 56 0 L 0 0 0 56" fill="none" stroke="#0f172a" strokeOpacity="0.055" strokeWidth="1" />
+ </pattern>
+ </defs>
+ <rect width="100%" height="100%" fill="url(#chart-grid-home)" />
+ </svg>
+ {/* Ship background — overflows card edges for that dramatic crop (desktop) */}
  <Image
  src="/hero-ship-v6.webp"
  alt=""
@@ -32,11 +46,11 @@ export default function Home() {
  <SiteHeader />
 
  {/* Hero text — left-anchored over the ship */}
- <section className="relative z-10 flex-1 flex flex-col justify-center px-6 lg:px-12 pb-8">
- <span className="inline-block text-[12px] font-semibold uppercase tracking-[0.18em] text-[#15803d] fade-in-up fade-in-up-1">
+ <section className="relative z-10 flex-1 flex flex-col justify-start lg:justify-center px-6 lg:px-12 pt-2 pb-8 gap-y-6 lg:gap-y-0">
+ <span className="inline-block text-[10px] sm:text-[12px] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] text-[#15803d] fade-in-up fade-in-up-1 whitespace-nowrap">
  Sailing Trust Across Every Ocean
  </span>
- <h1 className="mt-2 max-w-[640px] text-[42px] sm:text-[52px] lg:text-[64px] leading-[1.15] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
+ <h1 className="mt-2 max-w-[640px] text-[32px] sm:text-[52px] lg:text-[64px] leading-[1.15] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
  Your <span className="sweep-text">Trusted</span>
  <br />
  <span className="relative inline-block">
@@ -58,7 +72,7 @@ export default function Home() {
  </span>{" "}
  Partner
  </h1>
- <dl className="mt-9 flex items-center gap-6 fade-in-up fade-in-up-3">
+ <dl className="mt-7 sm:mt-9 flex flex-col sm:flex-row items-start sm:items-center gap-y-2.5 sm:gap-x-6 fade-in-up fade-in-up-3">
  {[
  { value: "197", label: "Vessels Powered" },
  { value: "5,000+", label: "Seafarers Deployed" },
@@ -66,21 +80,25 @@ export default function Home() {
  ].map((stat, i) => (
  <div
  key={stat.label}
- className={`flex flex-col ${i > 0 ? "pl-6 border-l border-neutral-300/80" : ""}`}
+ className={`flex items-baseline gap-3 sm:flex-col sm:items-start sm:gap-0 w-full sm:w-auto ${
+ i > 0
+ ? "pt-2.5 border-t border-neutral-200/70 sm:pt-0 sm:border-t-0 sm:pl-6 sm:border-l sm:border-neutral-300/80"
+ : ""
+ }`}
  >
- <dt className="text-[28px] sm:text-[32px] font-extrabold tracking-tight text-[#15803d] leading-none">
+ <dt className="text-[24px] sm:text-[32px] font-extrabold tracking-tight text-[#15803d] leading-none min-w-[88px] sm:min-w-0">
  {stat.value}
  </dt>
- <dd className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-600">
+ <dd className="text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-600 sm:mt-1">
  {stat.label}
  </dd>
  </div>
  ))}
  </dl>
- <div className="mt-8 flex items-center gap-3 fade-in-up fade-in-up-3">
+ <div className="mt-auto lg:mt-8 flex items-center gap-3 fade-in-up fade-in-up-3">
  <Link
  href="/inquire"
- className="rounded-full bg-[#15803d] px-6 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-[#126a33] transition-colors"
+ className="cta-breath rounded-full bg-[#15803d] px-6 py-2.5 text-[14px] font-semibold text-white hover:bg-[#126a33] transition-colors"
  >
  Inquire Now
  </Link>

@@ -37,6 +37,49 @@ body {
   }
 }
 
+/* Mobile: card goes edge-to-edge — borderless, no shadow, no surrounding padding.
+   Feels like a native mobile screen rather than a floating card. */
+@layer utilities {
+  @media (max-width: 1023px) {
+    .card-canvas.card-canvas {
+      border-radius: 0;
+      box-shadow: none;
+      max-width: 100%;
+      /* Fill the viewport height so content can be distributed vertically.
+         Subtract bottom nav (72px) so content doesn't sit beneath it. */
+      min-height: calc(100dvh - 72px);
+    }
+    body {
+      background: white;
+    }
+    main {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      background: white !important;
+      align-items: stretch !important;
+      justify-content: flex-start !important;
+    }
+    /* Header anchors to the very top of the screen on mobile, with
+       safe-area-inset support so notched / Dynamic Island devices look right. */
+    .card-canvas > div > header,
+    .card-canvas > header {
+      padding-top: max(env(safe-area-inset-top), 0.5rem) !important;
+    }
+    /* Home card: lock to exact viewport height so it never scrolls on mobile */
+    .card-canvas-locked.card-canvas-locked {
+      height: calc(100dvh - 72px);
+      min-height: calc(100dvh - 72px);
+      max-height: calc(100dvh - 72px);
+    }
+    body:has(.card-canvas-locked) {
+      overflow: hidden;
+      height: 100dvh;
+    }
+  }
+}
+
 @keyframes sweep-shine {
   0% {
     background-position: 0% 0;
@@ -304,6 +347,32 @@ body {
     animation: none !important;
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes cta-breath {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 1px 3px 0 rgba(21, 128, 61, 0.15);
+  }
+  50% {
+    transform: scale(1.025);
+    box-shadow: 0 6px 18px -4px rgba(21, 128, 61, 0.45);
+  }
+}
+
+.cta-breath {
+  animation: cta-breath 3s ease-in-out infinite;
+}
+
+.cta-breath:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-breath {
+    animation: none !important;
   }
 }
 

@@ -69,6 +69,7 @@ export default function SiteHeader() {
       window.removeEventListener("keydown", onKey);
     };
   }, [searchOpen]);
+
   return (
     <header className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-6 md:px-12 pt-4 sm:pt-5 pb-3 sm:pb-4">
       <Link href="/" className="flex items-center gap-3 shrink-0">
@@ -94,7 +95,7 @@ export default function SiteHeader() {
 
       {onPortal && <PortalTopNav />}
 
-      <nav className={`${onPortal ? "hidden" : "hidden md:flex"} items-center gap-9 text-[13px] font-medium text-neutral-700`}>
+      <nav className={`${onPortal ? "hidden" : "hidden md:flex"} absolute left-1/2 -translate-x-1/2 items-center gap-9 text-[13px] font-medium text-neutral-700`}>
         {[
           { label: "Fleet", href: "/fleet" },
           { label: "Leadership", href: "/leadership" },

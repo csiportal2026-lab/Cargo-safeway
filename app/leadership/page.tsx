@@ -11,20 +11,20 @@ export default function AboutPage() {
  className="relative z-10 flex-1 min-h-0 px-6 sm:px-12 pb-8 pt-2 lg:[zoom:0.9]"
  >
  <div className="grid grid-cols-1 lg:grid-cols-[minmax(308px,421px)_1fr] gap-8 lg:gap-0 items-stretch h-full">
- {/* CEO portrait — fills its column edge to edge */}
- <div className="relative w-full h-full z-10 about-split overflow-hidden">
+ {/* CEO portrait — entire image visible, scaled to fit */}
+ <div className="relative w-full h-72 sm:h-80 lg:h-full z-10 about-split overflow-hidden flex items-center justify-center">
  <Image
  src="/ceo.webp"
  alt="Reynaldo D. Casareo, President"
  fill
  priority
- sizes="(min-width: 1024px) 520px, 100vw"
- className="object-cover object-top"
+ sizes="(min-width: 1024px) 360px, 100vw"
+ className="object-contain object-center scale-[0.92]"
  />
  </div>
 
  {/* Message — vertically centered within the stretched column */}
- <div className="relative z-0 flex flex-col justify-center form-reveal lg:border-l lg:border-neutral-200/80 lg:pl-16">
+ <div className="relative z-0 flex flex-col justify-center form-reveal lg:pl-16">
  {/* Decorative quote glyph — frames the letter without imagery */}
  <span
  aria-hidden
