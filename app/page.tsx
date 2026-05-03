@@ -5,13 +5,27 @@ export default function Home() {
  return (
  <main className="h-screen w-full bg-[#f3f4f6] flex items-stretch justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
  <div className="relative w-full max-w-[1600px] bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ {/* Ship background — overflows card edges for that dramatic crop */}
+ <Image
+ src="/hero-ship.webp"
+ alt=""
+ width={2000}
+ height={1640}
+ priority
+ aria-hidden
+ className="pointer-events-none select-none hidden md:block absolute z-0 w-auto
+            md:right-[-15%] md:bottom-[-20%] md:h-[125%]
+            lg:right-[-10%] lg:bottom-[-18%] lg:h-[130%]
+            xl:right-[-8%] xl:bottom-[-15%] xl:h-[135%]
+            2xl:right-[-6%] 2xl:bottom-[-12%] 2xl:h-[140%]
+            max-h-[1500px]"
+ />
+
+ <div className="relative flex-1 flex flex-col">
  <SiteHeader />
 
- {/* Hero — grid layout: text left, ship right (like Find Us) */}
- <section className="relative z-10 flex-1 px-6 sm:px-12 pb-6 pt-2">
- <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6 items-stretch h-full fade-in-up fade-in-up-1">
- {/* Left: hero text */}
- <div className="flex flex-col justify-center">
+ {/* Hero text — left-anchored over the ship */}
+ <section className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-12 pb-8">
  <span className="inline-block text-[14px] font-medium text-neutral-500 fade-in-up fade-in-up-1">
  Sailing Trust Across Every Ocean
  </span>
@@ -70,21 +84,8 @@ export default function Home() {
  </li>
  ))}
  </ul>
- </div>
-
- {/* Right: ship — contained, scales with column */}
- <div className="relative hidden lg:block overflow-hidden">
- <Image
- src="/hero-ship.webp"
- alt="Container vessel"
- fill
- priority
- sizes="(min-width: 1024px) 50vw, 0px"
- className="pointer-events-none select-none object-cover object-left"
- />
- </div>
- </div>
  </section>
+ </div>
  </div>
  </main>
  );
