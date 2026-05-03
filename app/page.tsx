@@ -13,7 +13,7 @@ export default function Home() {
  height={1640}
  priority
  aria-hidden
- className="pointer-events-none select-none absolute right-[-180px] bottom-[-250px] w-auto h-[160%] max-h-[1400px] z-0 opacity-100"
+ className="pointer-events-none select-none hidden md:block absolute md:right-[-22%] md:bottom-[-28%] md:h-[130%] lg:right-[-15%] lg:bottom-[-22%] lg:h-[140%] xl:right-[-180px] xl:bottom-[-250px] xl:h-[160%] w-auto max-h-[1400px] z-0 opacity-100"
  />
  {/* Header + Hero wrapper */}
  <div className="relative flex-1 flex flex-col">
