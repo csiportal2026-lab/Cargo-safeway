@@ -4,7 +4,7 @@ import SignupPrompt from "./SignupPrompt";
 
 export default function LoginPage() {
  return (
- <main className="h-screen w-full bg-[#f3f4f6] flex items-stretch justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
+ <main className="h-screen w-full bg-[#f3f4f6] flex items-center justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
  <div className="relative w-full max-w-[1200px] bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
  <SiteHeader />
 
