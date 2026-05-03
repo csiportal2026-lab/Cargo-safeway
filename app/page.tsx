@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import SiteHeader from "./components/SiteHeader";
 
 export default function Home() {
@@ -7,13 +8,24 @@ export default function Home() {
  <div className="relative card-canvas w-full max-w-[1200px] lg:w-[1123px] lg:h-[632px] lg:shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
  {/* Ship background — overflows card edges for that dramatic crop */}
  <Image
- src="/hero-ship.webp"
+ src="/hero-ship-v6.webp"
  alt=""
- width={2000}
- height={1640}
+ fill
  priority
+ quality={95}
  aria-hidden
- className="pointer-events-none select-none hidden lg:block absolute z-0 w-auto right-[-10%] bottom-[-18%] h-[130%]"
+ sizes="(max-width: 1024px) 100vw, 1200px"
+ className="pointer-events-none select-none hidden lg:block object-cover z-0 saturate-[1.45] contrast-[1.07]"
+ />
+ {/* Left-side fade so headline + nav sit on calmer ground */}
+ <div
+ aria-hidden
+ className="pointer-events-none hidden lg:block absolute inset-0 z-[1] bg-gradient-to-r from-white/60 via-white/30 to-transparent"
+ />
+ {/* Top-strip fade to give the nav links a calm canvas */}
+ <div
+ aria-hidden
+ className="pointer-events-none hidden lg:block absolute inset-x-0 top-0 h-24 z-[1] bg-gradient-to-b from-white/55 to-transparent"
  />
 
  <div className="relative flex-1 flex flex-col">
@@ -21,11 +33,12 @@ export default function Home() {
 
  {/* Hero text — left-anchored over the ship */}
  <section className="relative z-10 flex-1 flex flex-col justify-center px-6 lg:px-12 pb-8">
- <span className="inline-block text-[14px] font-medium text-neutral-500 fade-in-up fade-in-up-1">
+ <span className="inline-block text-[12px] font-semibold uppercase tracking-[0.18em] text-[#15803d] fade-in-up fade-in-up-1">
  Sailing Trust Across Every Ocean
  </span>
- <h1 className="mt-2 max-w-[640px] text-[42px] sm:text-[52px] lg:text-[64px] leading-[1.18] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
- Your <span className="sweep-text">Trusted</span>{" "}
+ <h1 className="mt-2 max-w-[640px] text-[42px] sm:text-[52px] lg:text-[64px] leading-[1.15] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
+ Your <span className="sweep-text">Trusted</span>
+ <br />
  <span className="relative inline-block">
  Maritime
  <svg
@@ -35,50 +48,43 @@ export default function Home() {
  preserveAspectRatio="none"
  >
  <path
- d="M6 52 Q 110 4 214 52"
+ d="M10 46 Q 110 22 210 46"
  stroke="currentColor"
- strokeWidth="14"
+ strokeWidth="11"
  strokeLinecap="round"
  fill="none"
  />
  </svg>
- </span>
- <br />
+ </span>{" "}
  Partner
  </h1>
- <ul className="mt-8 space-y-2.5 max-w-[360px] fade-in-up fade-in-up-3">
+ <dl className="mt-9 flex items-center gap-6 fade-in-up fade-in-up-3">
  {[
- "Filipino crews",
- "Global routes",
- "Zero compromises",
- "Powering 197 vessels",
- ].map((line, i) => (
- <li
- key={i}
- className="flex items-center gap-3 text-[17px] font-semibold"
+ { value: "197", label: "Vessels Powered" },
+ { value: "5,000+", label: "Seafarers Deployed" },
+ { value: "Global", label: "Routes" },
+ ].map((stat, i) => (
+ <div
+ key={stat.label}
+ className={`flex flex-col ${i > 0 ? "pl-6 border-l border-neutral-300/80" : ""}`}
  >
- <span
- aria-hidden
- className="grid h-6 w-6 place-items-center rounded-full bg-[#15803d] text-white shadow-sm"
- >
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
- <path
- className="check-draw"
- style={{ animationDelay: `${1100 + i * 250}ms` }}
- d="M5 12.5 10 17 19 7"
- stroke="currentColor"
- strokeWidth="3"
- strokeLinecap="round"
- strokeLinejoin="round"
- />
- </svg>
- </span>
- <span className="tracking-[-0.01em] text-neutral-800">
- {line}
- </span>
- </li>
+ <dt className="text-[28px] sm:text-[32px] font-extrabold tracking-tight text-[#15803d] leading-none">
+ {stat.value}
+ </dt>
+ <dd className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-600">
+ {stat.label}
+ </dd>
+ </div>
  ))}
- </ul>
+ </dl>
+ <div className="mt-8 flex items-center gap-3 fade-in-up fade-in-up-3">
+ <Link
+ href="/inquire"
+ className="rounded-full bg-[#15803d] px-6 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-[#126a33] transition-colors"
+ >
+ Inquire Now
+ </Link>
+ </div>
  </section>
  </div>
  </div>

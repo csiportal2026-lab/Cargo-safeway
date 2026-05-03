@@ -166,6 +166,27 @@ body {
 .fade-in-up-3 { animation-delay: 280ms; }
 .fade-in-up-4 { animation-delay: 380ms; }
 .fade-in-up-5 { animation-delay: 480ms; }
+.fade-in-up-6 { animation-delay: 1300ms; }
+
+/* Calligraphic curve under "Voyage." — pen draws the swoosh from
+   left to right after the title words finish staggering in. */
+@keyframes curve-draw {
+  from { stroke-dashoffset: 260; }
+  to { stroke-dashoffset: 0; }
+}
+
+.curve-draw {
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  animation: curve-draw 800ms cubic-bezier(0.4, 0, 0.2, 1) 1100ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curve-draw {
+    animation: none !important;
+    stroke-dashoffset: 0;
+  }
+}
 
 @keyframes welcome-split {
   0% {
@@ -286,14 +307,77 @@ body {
   }
 }
 
+@keyframes map-pan-in {
+  0% {
+    opacity: 0;
+    transform: translateX(12%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.map-pan-in {
+  animation: map-pan-in 1200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 100ms;
+}
+
+/* Pulsing GPS dot — "you are here" indicator that lingers after the pan */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.65;
+  }
+  80%,
+  100% {
+    transform: scale(3.4);
+    opacity: 0;
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2200ms cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation-delay: 1100ms;
+}
+
+@keyframes pulse-dot-fade-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot-fade-in 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: 1100ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-pan-in,
+  .pulse-ring,
+  .pulse-dot {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .pulse-ring {
+    opacity: 0;
+  }
+}
+
 .sweep-text {
   background-image: linear-gradient(
     90deg,
     #111827 0%,
     #111827 30%,
-    #d4af37 45%,
-    #fde047 50%,
-    #d4af37 55%,
+    #15803d 45%,
+    #22c55e 50%,
+    #15803d 55%,
     #111827 70%,
     #111827 100%
   );

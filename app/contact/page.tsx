@@ -10,21 +10,46 @@ export default function ContactPage() {
  return (
  <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center px-4 sm:px-6 py-4 sm:py-6">
  <div className="relative card-canvas w-full max-w-[1200px] lg:w-[1123px] lg:h-[632px] lg:shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ {/* Hairline navigational grid — chart aesthetic, consistent with Fleet */}
+ <svg
+ aria-hidden
+ className="pointer-events-none absolute inset-0 z-0 w-full h-full"
+ preserveAspectRatio="none"
+ xmlns="http://www.w3.org/2000/svg"
+ >
+ <defs>
+ <pattern id="chart-grid-find" width="56" height="56" patternUnits="userSpaceOnUse">
+ <path d="M 56 0 L 0 0 0 56" fill="none" stroke="#0f172a" strokeOpacity="0.055" strokeWidth="1" />
+ </pattern>
+ </defs>
+ <rect width="100%" height="100%" fill="url(#chart-grid-find)" />
+ </svg>
  <SiteHeader />
 
  <section className="relative z-10 flex-1 px-6 sm:px-12 pb-12 pt-2">
  {/* Hero: smaller map beside the address card */}
  <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-5 items-stretch fade-in-up fade-in-up-1">
  {/* Map */}
- <div className="rounded-2xl overflow-hidden border border-[#15803d] h-[420px] lg:h-[520px]">
+ <div className="relative rounded-2xl overflow-hidden border border-[#15803d] h-[420px] lg:h-[520px]">
  <iframe
  title="Cargo Safeway office map"
  src="https://maps.google.com/maps?q=14.6028,121.0099%20(Cargo%20Safeway%20Inc.)&z=17&t=m&output=embed&hl=en"
- className="w-full h-full block"
+ className="w-full h-full block map-pan-in"
  style={{ border: 0 }}
  loading="lazy"
  referrerPolicy="no-referrer-when-downgrade"
  />
+ {/* Pulsing GPS dot — lingers at the office coordinate after the pan-in */}
+ <div aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center">
+ <div className="relative w-3.5 h-3.5">
+ <span className="absolute inset-0 rounded-full bg-[#15803d] pulse-ring" />
+ <span
+ className="absolute inset-0 rounded-full bg-[#15803d] pulse-ring"
+ style={{ animationDelay: "1900ms" }}
+ />
+ <span className="absolute inset-0 rounded-full bg-[#15803d] ring-2 ring-white shadow-[0_4px_12px_rgba(21,128,61,0.4)] pulse-dot" />
+ </div>
+ </div>
  </div>
 
  {/* Address card */}
@@ -33,6 +58,9 @@ export default function ContactPage() {
  <h1 className="text-[24px] leading-[1.1] font-extrabold tracking-[-0.02em] text-neutral-900">
  Location
  </h1>
+ <div className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-[#15803d] tabular-nums">
+ 14.6028° N · 121.0099° E
+ </div>
  <div className="mt-3 space-y-0.5 text-[13px] leading-[1.55] text-neutral-700">
  {ADDRESS_LINES.map((l) => (
  <p key={l}>{l}</p>
@@ -40,7 +68,7 @@ export default function ContactPage() {
  </div>
 
  {/* Transit notes */}
- <div className="mt-5 pt-4 border-t border-neutral-200 space-y-2.5">
+ <div className="mt-5 space-y-2.5">
  <div className="text-[9.5px] font-semibold uppercase tracking-wider text-neutral-500">
  How to Get Here
  </div>
@@ -88,7 +116,7 @@ export default function ContactPage() {
  </div>
 
  <div className="mt-5 space-y-3">
- <div className="pt-4 border-t border-neutral-200 space-y-3 text-[11.5px]">
+ <div className="grid grid-cols-2 gap-x-4 text-[11.5px]">
  <div>
  <div className="text-[9.5px] font-semibold uppercase tracking-wider text-neutral-500">
  Office Hours
@@ -101,7 +129,12 @@ export default function ContactPage() {
  <div className="text-[9.5px] font-semibold uppercase tracking-wider text-neutral-500">
  Main Line
  </div>
- <div className="mt-0.5 text-neutral-800">+63 2 8716 5532</div>
+ <a
+ href="tel:+63287165532"
+ className="mt-0.5 block text-neutral-800 hover:text-[#15803d] transition-colors"
+ >
+ +63 2 8716 5532
+ </a>
  </div>
  </div>
 

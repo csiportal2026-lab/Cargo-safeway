@@ -2,23 +2,54 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import PortalTopNav from "../portal/PortalTopNav";
 
+// Search triggers that redirect to the login page. Permissive matching:
+// the trigger fires whenever any of these substrings appears in the
+// search input (case-insensitive). So typing just "log" already redirects.
+const LOGIN_TRIGGERS = ["log", "sign in", "signin", "portal", "seafarer"];
+
 export default function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const onInquire = pathname === "/inquire";
-  const onLogin = pathname === "/login";
+  const onHome = pathname === "/";
   const onPortal = pathname?.startsWith("/portal");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [iconHint, setIconHint] = useState<"search" | "login">("search");
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (searchOpen) inputRef.current?.focus();
   }, [searchOpen]);
+
+  // Cycle the search-button icon. Search icon stays visible for 5s,
+  // login hint flashes for 2s, then back to search. Loops.
+  // Only runs while the search box is closed and we're not on the portal.
+  useEffect(() => {
+    if (searchOpen || onPortal) return;
+    const delay = iconHint === "search" ? 5000 : 2000;
+    const id = window.setTimeout(() => {
+      setIconHint((h) => (h === "search" ? "login" : "search"));
+    }, delay);
+    return () => window.clearTimeout(id);
+  }, [searchOpen, onPortal, iconHint]);
+
+  function tryLoginRedirect(query: string) {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return false;
+    if (LOGIN_TRIGGERS.some((t) => normalized.includes(t))) {
+      setSearchOpen(false);
+      setSearchQuery("");
+      router.push("/login");
+      return true;
+    }
+    return false;
+  }
 
   useEffect(() => {
     if (!searchOpen) return;
@@ -42,7 +73,7 @@ export default function SiteHeader() {
     <header className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-6 md:px-12 pt-4 sm:pt-5 pb-3 sm:pb-4">
       <Link href="/" className="flex items-center gap-3 shrink-0">
         <Image
-          src="/logo-cs.jpg"
+          src="/logo-cs.png"
           alt="Cargo Safeway logo"
           width={64}
           height={64}
@@ -107,7 +138,18 @@ export default function SiteHeader() {
               type="text"
               placeholder="Search…"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                const next = e.target.value;
+                setSearchQuery(next);
+                // Auto-redirect when the user finishes typing a login keyword
+                tryLoginRedirect(next);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  tryLoginRedirect(searchQuery);
+                }
+              }}
               tabIndex={searchOpen ? 0 : -1}
               className={`flex-1 min-w-0 bg-transparent text-[13px] text-neutral-800 placeholder:text-neutral-500 outline-none transition-opacity duration-200 ${
                 searchOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -144,32 +186,47 @@ export default function SiteHeader() {
                   />
                 </svg>
               ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
-                  <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
+                <span className="relative grid place-items-center w-4 h-4">
+                  {/* Search icon */}
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden
+                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                      iconHint === "search" ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
+                    <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                  {/* Login (person) icon */}
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden
+                    className={`absolute -inset-[1px] transition-opacity duration-700 ease-in-out ${
+                      iconHint === "login" ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8" />
+                    <path
+                      d="M4 20c1.5-3.5 4.7-5.5 8-5.5s6.5 2 8 5.5"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
               )}
             </button>
           </div>
         </div>
-        {!onPortal && (
-          <Link
-            href="/login"
-            aria-label="Log in"
-            aria-current={onLogin ? "page" : undefined}
-            title="Log in"
-            className={
-              onLogin
-                ? "h-9 w-9 grid place-items-center rounded-full border-2 border-[#15803d] text-[#15803d] bg-transparent transition-colors"
-                : "h-9 w-9 grid place-items-center rounded-full text-neutral-700 hover:bg-neutral-100 hover:text-[#15803d] transition-colors"
-            }
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8" />
-              <path d="M4 20c1.5-3.5 4.7-5.5 8-5.5s6.5 2 8 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          </Link>
-        )}
+        {/* Login icon intentionally hidden from public nav.
+            Type "login" / "portal" / "sign in" in the search box to access. */}
         {onPortal ? (
           <Link
             href="/"
@@ -177,7 +234,7 @@ export default function SiteHeader() {
           >
             Log Out
           </Link>
-        ) : (
+        ) : onHome ? null : (
           <Link
             href="/inquire"
             aria-current={onInquire ? "page" : undefined}

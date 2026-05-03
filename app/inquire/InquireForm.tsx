@@ -1,11 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xjglgowg";
+const COOLDOWN_KEY = "cs_inquire_submission";
+const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+// 🚧 TESTING ONLY — set to false before pushing to production.
+// When true: skips the 24-hour cooldown so you can submit repeatedly
+// to test the form/success states.
+const BYPASS_COOLDOWN = true;
 
 type Status = "idle" | "sending" | "sent" | "error";
 type View = "form" | "comment";
+
+type StoredSubmission = {
+  refId: string;
+  submittedAt: number;
+};
 
 export default function InquireForm() {
   const [view, setView] = useState<View>("form");
@@ -14,11 +26,35 @@ export default function InquireForm() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [position, setPosition] = useState("");
+  const [age, setAge] = useState("");
   const [years, setYears] = useState("");
   const [message, setMessage] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [refId, setRefId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // On mount: if there's a recent submission within 24h, show the success state
+  useEffect(() => {
+    if (BYPASS_COOLDOWN) return;
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(COOLDOWN_KEY);
+      if (!raw) return;
+      const parsed: StoredSubmission = JSON.parse(raw);
+      const elapsed = Date.now() - parsed.submittedAt;
+      if (elapsed < COOLDOWN_MS && parsed.refId) {
+        setRefId(parsed.refId);
+        setStatus("sent");
+      } else {
+        // Stale — clear it
+        window.localStorage.removeItem(COOLDOWN_KEY);
+      }
+    } catch {
+      // Corrupt entry — clear
+      window.localStorage.removeItem(COOLDOWN_KEY);
+    }
+  }, []);
 
   function generateRefId() {
     let digits = "";
@@ -51,6 +87,7 @@ export default function InquireForm() {
           phone,
           email,
           position,
+          age,
           yearsAtSea: years,
           coverNote: message || "(none)",
           referenceId: reference,
@@ -85,6 +122,21 @@ export default function InquireForm() {
 
       setRefId(reference);
       setStatus("sent");
+
+      // Persist so the user sees the success card on revisit within 24h
+      if (!BYPASS_COOLDOWN) {
+        try {
+          window.localStorage.setItem(
+            COOLDOWN_KEY,
+            JSON.stringify({
+              refId: reference,
+              submittedAt: Date.now(),
+            } satisfies StoredSubmission),
+          );
+        } catch {
+          /* localStorage unavailable — non-fatal */
+        }
+      }
     } catch (err) {
       setStatus("error");
       setErrorMsg(
@@ -106,13 +158,46 @@ export default function InquireForm() {
     }
   }
 
+
   const isBusy = status === "sending" || status === "sent";
+  const ageNum = parseInt(age, 10);
+  const isAgeValid = !isNaN(ageNum) && ageNum >= 18 && ageNum < 70;
   const isFormValid =
     name.trim().length > 0 &&
     /^\d{11}$/.test(phone) &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
     position.length > 0 &&
-    years.length > 0;
+    isAgeValid &&
+    years.length > 0 &&
+    agreed;
+
+  if (status === "sent" && refId) {
+    return (
+      <SuccessCard
+        refId={refId}
+        copied={copied}
+        onCopy={copyRefId}
+        onDevReset={
+          BYPASS_COOLDOWN
+            ? () => {
+                setStatus("idle");
+                setName("");
+                setPhone("");
+                setEmail("");
+                setPosition("");
+                setAge("");
+                setYears("");
+                setMessage("");
+                setAgreed(false);
+                setRefId(null);
+                setCopied(false);
+                setErrorMsg(null);
+              }
+            : undefined
+        }
+      />
+    );
+  }
 
   if (view === "comment") {
     return (
@@ -132,16 +217,17 @@ export default function InquireForm() {
 
   return (
     <form className="space-y-3 h-full" onSubmit={handleSubmit}>
-      <div className="grid grid-cols-[1fr_180px] gap-3">
+      <div className="grid grid-cols-[1fr_160px] gap-3">
         <FormField
           label="Full Name"
           name="name"
           type="text"
-          placeholder="Ian Rex"
+          placeholder="Juan dela Cruz"
           disabled={isBusy}
           required
           value={name}
           onChange={setName}
+          valid={name.trim().length > 0}
         />
         <FormField
           label="Phone Number"
@@ -155,19 +241,21 @@ export default function InquireForm() {
           maxLength={11}
           value={phone}
           onChange={(v) => setPhone(v.replace(/\D/g, "").slice(0, 11))}
+          valid={/^\d{11}$/.test(phone)}
         />
       </div>
 
-      <div className="grid grid-cols-[1fr_140px] gap-3">
+      <div className="grid grid-cols-[1fr_160px] gap-3">
         <FormField
           label="Email"
           name="email"
           type="email"
-          placeholder="Email"
+          placeholder="you@example.com"
           disabled={isBusy}
           required
           value={email}
           onChange={setEmail}
+          valid={/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)}
         />
         <div>
           <label
@@ -175,10 +263,15 @@ export default function InquireForm() {
             className="block text-[12.5px] font-medium text-neutral-700 mb-1.5"
           >
             Years at Sea
+            <span className="ml-0.5 text-[#15803d]">*</span>
           </label>
           <label
             htmlFor="years"
-            className="flex items-center w-full cursor-text rounded-xl bg-white border border-neutral-200 px-4 py-3 focus-within:border-neutral-400"
+            className={`flex items-center w-full cursor-text rounded-xl bg-white border px-4 py-3 transition-colors ${
+              years.length > 0
+                ? "border-emerald-400/80 focus-within:border-emerald-500"
+                : "border-neutral-200 focus-within:border-neutral-400"
+            }`}
           >
             <input
               id="years"
@@ -204,12 +297,14 @@ export default function InquireForm() {
         </div>
       </div>
 
-      <div>
+      <div className="grid grid-cols-[1fr_160px] gap-3">
+       <div>
         <label
           htmlFor="position"
           className="block text-[12.5px] font-medium text-neutral-700 mb-1.5"
         >
           Position Applying For
+          <span className="ml-0.5 text-[#15803d]">*</span>
         </label>
         <div className="relative">
           <select
@@ -219,7 +314,11 @@ export default function InquireForm() {
             value={position}
             onChange={(e) => setPosition(e.target.value)}
             disabled={isBusy}
-            className="w-full appearance-none rounded-xl bg-white border border-neutral-200 px-4 py-3 text-[13.5px] font-semibold text-neutral-900 outline-none focus:border-neutral-400 pr-10 disabled:opacity-60 invalid:text-neutral-400 invalid:font-normal"
+            className={`w-full appearance-none rounded-xl bg-white border px-4 py-3 text-[13.5px] font-semibold text-neutral-900 outline-none pr-10 disabled:opacity-60 invalid:text-neutral-400 invalid:font-normal transition-colors ${
+              position
+                ? "border-emerald-400/80 focus:border-emerald-500"
+                : "border-neutral-200 focus:border-neutral-400"
+            }`}
           >
             <option value="" disabled>
               e.g. Third Engineer
@@ -264,6 +363,40 @@ export default function InquireForm() {
             />
           </svg>
         </div>
+       </div>
+
+       <div>
+         <label
+           htmlFor="age"
+           className="block text-[12.5px] font-medium text-neutral-700 mb-1.5"
+         >
+           Age
+           <span className="ml-0.5 text-[#15803d]">*</span>
+         </label>
+         <input
+           id="age"
+           name="age"
+           type="text"
+           inputMode="numeric"
+           pattern="[0-9]+"
+           maxLength={2}
+           placeholder="e.g. 32"
+           required
+           disabled={isBusy}
+           value={age}
+           onChange={(e) => {
+             const next = e.target.value.replace(/\D/g, "").slice(0, 2);
+             setAge(next);
+           }}
+           className={`w-full rounded-xl bg-white border px-4 py-3 text-[13.5px] font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none disabled:opacity-60 transition-colors ${
+             age.length === 0
+               ? "border-neutral-200 focus:border-neutral-400"
+               : isAgeValid
+                 ? "border-emerald-400/80 focus:border-emerald-500"
+                 : "border-rose-300/80 focus:border-rose-400"
+           }`}
+         />
+       </div>
       </div>
 
       {/* Cover note with expand icon */}
@@ -273,6 +406,7 @@ export default function InquireForm() {
           className="block text-[12.5px] font-medium text-neutral-700 mb-1.5"
         >
           Cover Note
+          <span className="ml-1 text-[10.5px] font-normal text-neutral-400">(optional)</span>
         </label>
         <div className="relative">
           <textarea
@@ -280,7 +414,7 @@ export default function InquireForm() {
             name="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Briefly tell us about your experience…"
+            placeholder="e.g. 8 years on container vessels, BOSIET certified, last contract on a 14,000-TEU box ship..."
             disabled={isBusy}
             rows={2}
             className="w-full resize-none rounded-xl bg-white border border-neutral-200 px-4 py-3 pr-10 text-[13.5px] font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none focus:border-neutral-400 disabled:opacity-60"
@@ -306,8 +440,22 @@ export default function InquireForm() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 whitespace-nowrap">
+      <div className="flex items-center gap-3">
         <SubmitButton status={status} disabled={isBusy || !isFormValid} />
+        {status !== "error" && (
+          <label className="block cursor-pointer max-w-[440px] select-none text-[10.5px] leading-[1.5] text-neutral-600">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              disabled={isBusy}
+              className="mr-1.5 h-3 w-3 align-[-1px] accent-[#15803d] cursor-pointer"
+            />
+            I confirm the information is accurate, consent to its processing
+            for recruitment under the Data Privacy Act of 2012, and acknowledge
+            that this submission does not guarantee employment.
+          </label>
+        )}
         {status === "error" && errorMsg && (
           <span className="text-[12.5px] text-rose-600 font-semibold whitespace-normal">
             {errorMsg}
@@ -344,6 +492,98 @@ export default function InquireForm() {
         )}
       </div>
     </form>
+  );
+}
+
+function SuccessCard({
+  refId,
+  copied,
+  onCopy,
+  onDevReset,
+}: {
+  refId: string;
+  copied: boolean;
+  onCopy: () => void;
+  onDevReset?: () => void;
+}) {
+  return (
+    <div className="flex flex-col items-center text-center h-full pt-2 fade-in-up fade-in-up-1">
+      {/* Animated check */}
+      <div className="grid h-16 w-16 place-items-center rounded-full bg-[#15803d]/10 ring-1 ring-[#15803d]/20 check-pop">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            d="m5 12.5 5 5 9-10"
+            stroke="#15803d"
+            strokeWidth="2.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+
+      <h2 className="mt-5 text-[22px] font-extrabold tracking-tight text-neutral-900 fade-in-up fade-in-up-2">
+        Inquiry received
+      </h2>
+
+      <p className="mt-2 max-w-[420px] text-[13px] leading-relaxed text-neutral-600 fade-in-up fade-in-up-3">
+        Your application has reached our crewing team. We&apos;ll be in touch
+        should there be an opportunity that matches your experience.
+      </p>
+
+      {/* Reference number block */}
+      <div className="mt-6 inline-flex items-center gap-3 rounded-full bg-neutral-50 ring-1 ring-neutral-200 pl-4 pr-2 py-1.5 fade-in-up fade-in-up-4">
+        <span className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-neutral-500">
+          Reference
+        </span>
+        <span className="font-mono text-[14px] font-bold text-neutral-900 tabular-nums">
+          {refId}
+        </span>
+        <button
+          type="button"
+          onClick={onCopy}
+          aria-label={copied ? "Copied" : "Copy reference number"}
+          title={copied ? "Copied" : "Copy"}
+          className="grid h-7 w-7 place-items-center rounded-full text-neutral-500 hover:bg-white hover:text-[#15803d] transition-colors"
+        >
+          {copied ? (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M5 12.5 10 17 19 7"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2" />
+              <path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </button>
+      </div>
+
+      <p className="mt-3 text-[11.5px] text-neutral-500 max-w-[360px] fade-in-up fade-in-up-5">
+        Save this number — our team may reference it when we reach out.
+      </p>
+
+      {onDevReset && (
+        <button
+          type="button"
+          onClick={onDevReset}
+          className="mt-6 text-[11px] text-amber-700 underline hover:text-amber-900"
+        >
+          🚧 Dev: reset to form
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -480,6 +720,7 @@ function FormField({
   name,
   type,
   placeholder,
+  helper,
   disabled,
   required,
   inputMode,
@@ -487,11 +728,13 @@ function FormField({
   maxLength,
   value,
   onChange,
+  valid,
 }: {
   label: string;
   name: string;
   type: string;
   placeholder: string;
+  helper?: string;
   disabled?: boolean;
   required?: boolean;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
@@ -499,7 +742,16 @@ function FormField({
   maxLength?: number;
   value?: string;
   onChange?: (v: string) => void;
+  valid?: boolean;
 }) {
+  const hasValue = !!value && value.length > 0;
+  const showValid = hasValue && valid === true;
+  const showInvalid = hasValue && valid === false;
+  const borderCls = showValid
+    ? "border-emerald-400/80 focus:border-emerald-500"
+    : showInvalid
+      ? "border-rose-300/80 focus:border-rose-400"
+      : "border-neutral-200 focus:border-neutral-400";
   return (
     <div>
       <label
@@ -507,6 +759,7 @@ function FormField({
         className="block text-[12.5px] font-medium text-neutral-700 mb-1.5"
       >
         {label}
+        {required && <span className="ml-0.5 text-[#15803d]">*</span>}
       </label>
       <input
         id={name}
@@ -520,8 +773,11 @@ function FormField({
         maxLength={maxLength}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
-        className="w-full rounded-xl bg-white border border-neutral-200 px-4 py-3 text-[13.5px] font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none focus:border-neutral-400 disabled:opacity-60"
+        className={`w-full rounded-xl bg-white border ${borderCls} px-4 py-3 text-[13.5px] font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none disabled:opacity-60 transition-colors`}
       />
+      {helper && (
+        <p className="mt-1 text-[11px] leading-snug text-neutral-500">{helper}</p>
+      )}
     </div>
   );
 }

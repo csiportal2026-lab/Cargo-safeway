@@ -10,7 +10,7 @@ export default function AboutPage() {
  <section
  className="relative z-10 flex-1 min-h-0 px-6 sm:px-12 pb-8 pt-2 lg:[zoom:0.9]"
  >
- <div className="grid grid-cols-1 lg:grid-cols-[minmax(308px,421px)_1fr] gap-8 lg:gap-16 items-stretch h-full">
+ <div className="grid grid-cols-1 lg:grid-cols-[minmax(308px,421px)_1fr] gap-8 lg:gap-0 items-stretch h-full">
  {/* CEO portrait — fills its column edge to edge */}
  <div className="relative w-full h-full z-10 about-split overflow-hidden">
  <Image
@@ -24,7 +24,17 @@ export default function AboutPage() {
  </div>
 
  {/* Message — vertically centered within the stretched column */}
- <div className="relative z-0 flex flex-col justify-center form-reveal">
+ <div className="relative z-0 flex flex-col justify-center form-reveal lg:border-l lg:border-neutral-200/80 lg:pl-16">
+ {/* Decorative quote glyph — frames the letter without imagery */}
+ <span
+ aria-hidden
+ className="pointer-events-none absolute -top-6 left-12 lg:left-14 text-[180px] leading-none font-serif text-[#15803d]/[0.07] select-none"
+ >
+ &ldquo;
+ </span>
+ <span className="relative inline-block text-[11px] font-semibold uppercase tracking-[0.22em] text-[#15803d] mb-3 fade-in-up fade-in-up-1">
+ From the President
+ </span>
  <h1 className="text-[36px] sm:text-[44px] lg:text-[60px] leading-[1.05] font-extrabold tracking-[-0.025em] text-neutral-900">
  Built on <span className="sweep-text">Trust</span>.
  <br />
