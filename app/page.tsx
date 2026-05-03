@@ -3,8 +3,8 @@ import SiteHeader from "./components/SiteHeader";
 
 export default function Home() {
  return (
- <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center overflow-x-auto px-4 sm:px-6 py-4 sm:py-6 transition-colors">
- <div className="relative card-canvas w-[1123px] h-[632px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
+ <div className="relative card-canvas w-full max-w-[1200px] lg:w-[1123px] lg:h-[632px] lg:shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
  {/* Ship background — overflows card edges for that dramatic crop */}
  <Image
  src="/hero-ship.webp"
@@ -13,18 +13,18 @@ export default function Home() {
  height={1640}
  priority
  aria-hidden
- className="pointer-events-none select-none absolute z-0 w-auto right-[-10%] bottom-[-18%] h-[130%]"
+ className="pointer-events-none select-none hidden lg:block absolute z-0 w-auto right-[-10%] bottom-[-18%] h-[130%]"
  />
 
  <div className="relative flex-1 flex flex-col">
  <SiteHeader />
 
  {/* Hero text — left-anchored over the ship */}
- <section className="relative z-10 flex-1 flex flex-col justify-center px-12 pb-8">
+ <section className="relative z-10 flex-1 flex flex-col justify-center px-6 lg:px-12 pb-8">
  <span className="inline-block text-[14px] font-medium text-neutral-500 fade-in-up fade-in-up-1">
  Sailing Trust Across Every Ocean
  </span>
- <h1 className="mt-2 max-w-[640px] text-[64px] leading-[1.18] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
+ <h1 className="mt-2 max-w-[640px] text-[42px] sm:text-[52px] lg:text-[64px] leading-[1.18] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
  Your <span className="sweep-text">Trusted</span>{" "}
  <span className="relative inline-block">
  Maritime

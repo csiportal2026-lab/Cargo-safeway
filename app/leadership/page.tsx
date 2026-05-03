@@ -3,15 +3,14 @@ import SiteHeader from "../components/SiteHeader";
 
 export default function AboutPage() {
  return (
- <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center overflow-x-auto px-4 sm:px-6 py-4 sm:py-6 transition-colors">
- <div className="relative card-canvas w-[1123px] h-[632px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
+ <div className="relative card-canvas w-full max-w-[1200px] lg:w-[1123px] lg:h-[632px] lg:shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
  <SiteHeader />
 
  <section
- className="relative z-10 flex-1 min-h-0 px-6 sm:px-12 pb-8 pt-2"
- style={{ zoom: 0.9 }}
+ className="relative z-10 flex-1 min-h-0 px-6 sm:px-12 pb-8 pt-2 lg:[zoom:0.9]"
  >
- <div className="grid grid-cols-[minmax(308px,421px)_1fr] gap-16 items-stretch h-full">
+ <div className="grid grid-cols-1 lg:grid-cols-[minmax(308px,421px)_1fr] gap-8 lg:gap-16 items-stretch h-full">
  {/* CEO portrait — fills its column edge to edge */}
  <div className="relative w-full h-full z-10 about-split overflow-hidden">
  <Image
@@ -26,7 +25,7 @@ export default function AboutPage() {
 
  {/* Message — vertically centered within the stretched column */}
  <div className="relative z-0 flex flex-col justify-center form-reveal">
- <h1 className="text-[60px] leading-[1.05] font-extrabold tracking-[-0.025em] text-neutral-900">
+ <h1 className="text-[36px] sm:text-[44px] lg:text-[60px] leading-[1.05] font-extrabold tracking-[-0.025em] text-neutral-900">
  Built on <span className="sweep-text">Trust</span>.
  <br />
  Powered by People.

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 
-type Status = "idle" | "sending" | "sent";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xjglgowg";
+
+type Status = "idle" | "sending" | "sent" | "error";
 type View = "form" | "comment";
 
 export default function InquireForm() {
@@ -16,6 +18,7 @@ export default function InquireForm() {
   const [message, setMessage] = useState("");
   const [refId, setRefId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   function generateRefId() {
     let digits = "";
@@ -25,17 +28,56 @@ export default function InquireForm() {
     return `BM8${digits}`;
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (status !== "idle") return;
+    if (status === "sending" || status === "sent") return;
     setStatus("sending");
     setRefId(null);
     setCopied(false);
-    window.setTimeout(() => {
-      setRefId(generateRefId());
+    setErrorMsg(null);
+
+    const reference = generateRefId();
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          // Standard fields
+          name,
+          phone,
+          email,
+          position,
+          yearsAtSea: years,
+          coverNote: message || "(none)",
+          referenceId: reference,
+          // Formspree special fields — pretties up the email in your inbox
+          _subject: `New Inquiry · ${position} · ${name} (Ref ${reference})`,
+          _replyto: email,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(
+          data?.errors?.[0]?.message ||
+            `Submission failed (${response.status}). Please try again.`,
+        );
+      }
+
+      setRefId(reference);
       setStatus("sent");
-    }, 1800);
-    // No reset — once sent, the form stays locked with the reference ID visible.
+    } catch (err) {
+      setStatus("error");
+      setErrorMsg(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
+    }
   }
 
   async function copyRefId() {
@@ -49,7 +91,7 @@ export default function InquireForm() {
     }
   }
 
-  const isBusy = status !== "idle";
+  const isBusy = status === "sending" || status === "sent";
   const isFormValid =
     name.trim().length > 0 &&
     /^\d{11}$/.test(phone) &&
@@ -251,6 +293,11 @@ export default function InquireForm() {
 
       <div className="flex items-center gap-3 whitespace-nowrap">
         <SubmitButton status={status} disabled={isBusy || !isFormValid} />
+        {status === "error" && errorMsg && (
+          <span className="text-[12.5px] text-rose-600 font-semibold whitespace-normal">
+            {errorMsg}
+          </span>
+        )}
         {status === "sent" && refId && (
           <div className="ref-id-pop inline-flex items-center gap-2 text-[13px] text-neutral-800">
             <span className="text-neutral-500">Reference number:</span>
@@ -338,8 +385,9 @@ function CommentBox({
 }
 
 function SubmitButton({ status, disabled }: { status: Status; disabled: boolean }) {
-  const inactive = status === "idle" && disabled;
-  const ready = status === "idle" && !disabled;
+  const isIdleOrError = status === "idle" || status === "error";
+  const inactive = isIdleOrError && disabled;
+  const ready = isIdleOrError && !disabled;
   return (
     <button
       type="submit"
@@ -347,17 +395,19 @@ function SubmitButton({ status, disabled }: { status: Status; disabled: boolean 
       className={`inline-flex items-center gap-2 rounded-full pl-2 pr-6 py-2 text-[13px] font-semibold text-white shadow transition-all duration-300 ${
         status === "sent"
           ? "bg-emerald-600 cursor-default"
-          : inactive
-            ? "bg-neutral-300 cursor-not-allowed"
-            : "bg-[#15803d] hover:bg-[#126a33] disabled:bg-[#15803d]/80"
+          : status === "error"
+            ? "bg-rose-600 hover:bg-rose-700"
+            : inactive
+              ? "bg-neutral-300 cursor-not-allowed"
+              : "bg-[#15803d] hover:bg-[#126a33] disabled:bg-[#15803d]/80"
       } ${ready ? "submit-ready" : ""}`}
     >
       <span
         className={`grid h-7 w-7 place-items-center rounded-full bg-white ${
-          inactive ? "text-neutral-400" : "text-[#15803d]"
+          inactive ? "text-neutral-400" : status === "error" ? "text-rose-600" : "text-[#15803d]"
         }`}
       >
-        {status === "idle" && (
+        {isIdleOrError && (
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path
               d="m22 2-11 11M22 2l-7 20-4-9-9-4 20-7z"
@@ -404,6 +454,7 @@ function SubmitButton({ status, disabled }: { status: Status; disabled: boolean 
         {status === "idle" && "Submit"}
         {status === "sending" && "Sending..."}
         {status === "sent" && "Sent!"}
+        {status === "error" && "Retry"}
       </span>
     </button>
   );
