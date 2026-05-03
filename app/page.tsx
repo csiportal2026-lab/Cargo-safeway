@@ -5,27 +5,17 @@ export default function Home() {
  return (
  <main className="h-screen w-full bg-[#f3f4f6] flex items-stretch justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
  <div className="relative w-full max-w-[1200px] bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
- {/* Ship background — spans the entire card */}
- <Image
- src="/hero-ship.webp"
- alt=""
- width={2000}
- height={1640}
- priority
- aria-hidden
- className="pointer-events-none select-none hidden md:block absolute md:right-[-22%] md:bottom-[-28%] md:h-[130%] lg:right-[-15%] lg:bottom-[-22%] lg:h-[140%] xl:right-[-180px] xl:bottom-[-250px] xl:h-[160%] w-auto max-h-[1400px] z-0 opacity-100"
- />
- {/* Header + Hero wrapper */}
- <div className="relative flex-1 flex flex-col">
-
  <SiteHeader />
 
- {/* Hero */}
- <section className="relative z-10 flex-1 px-6 sm:px-12 pt-8 pb-6 text-left">
+ {/* Hero — grid layout: text left, ship right (like Find Us) */}
+ <section className="relative z-10 flex-1 px-6 sm:px-12 pb-6 pt-2">
+ <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6 items-stretch h-full fade-in-up fade-in-up-1">
+ {/* Left: hero text */}
+ <div className="flex flex-col justify-center">
  <span className="inline-block text-[14px] font-medium text-neutral-500 fade-in-up fade-in-up-1">
  Sailing Trust Across Every Ocean
  </span>
- <h1 className="mt-0 max-w-[640px] text-[48px] sm:text-[72px] leading-[1.18] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
+ <h1 className="mt-2 max-w-[640px] text-[48px] sm:text-[64px] xl:text-[72px] leading-[1.18] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
  Your <span className="sweep-text">Trusted</span>{" "}
  <span className="relative inline-block">
  Maritime
@@ -80,9 +70,21 @@ export default function Home() {
  </li>
  ))}
  </ul>
- </section>
  </div>
 
+ {/* Right: ship — contained, scales with column */}
+ <div className="relative hidden lg:block overflow-hidden">
+ <Image
+ src="/hero-ship.webp"
+ alt="Container vessel"
+ fill
+ priority
+ sizes="(min-width: 1024px) 50vw, 0px"
+ className="pointer-events-none select-none object-cover object-left"
+ />
+ </div>
+ </div>
+ </section>
  </div>
  </main>
  );
