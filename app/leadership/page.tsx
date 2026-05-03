@@ -7,7 +7,10 @@ export default function AboutPage() {
  <div className="relative card-canvas w-[1123px] h-[632px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
  <SiteHeader />
 
- <section className="relative z-10 flex-1 min-h-0 px-6 sm:px-12 pb-8 pt-2">
+ <section
+ className="relative z-10 flex-1 min-h-0 px-6 sm:px-12 pb-8 pt-2"
+ style={{ zoom: 0.9 }}
+ >
  <div className="grid grid-cols-[minmax(308px,421px)_1fr] gap-16 items-stretch h-full">
  {/* CEO portrait — fills its column edge to edge */}
  <div className="relative w-full h-full z-10 about-split overflow-hidden">
