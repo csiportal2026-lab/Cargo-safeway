@@ -23,12 +23,17 @@ body {
   font-family: var(--font-jakarta), Arial, Helvetica, sans-serif;
 }
 
-/* Pixel-locked design canvas: card is 1080x608 internally,
+/* Pixel-locked design canvas: card is 1123x632 internally,
    scales as a single unit to fill the viewport on bigger screens.
    Below the design size, stays at natural size (may scroll). */
 @media (min-width: 1024px) {
   .card-canvas {
-    zoom: max(1, min(calc((100vw - 32px) / 1080), calc((100vh - 32px) / 608)));
+    zoom: max(1, min(calc((100vw - 32px) / 1123), calc((100vh - 32px) / 632)));
+  }
+  /* Leadership uses a slightly larger design canvas (~8% less zoom)
+     so the CEO portrait and message text don't crowd the card. */
+  .card-canvas-leadership {
+    zoom: max(1, min(calc((100vw - 32px) / 1214), calc((100vh - 32px) / 683)));
   }
 }
 

@@ -79,11 +79,11 @@ export default function AvailabilityPage() {
   const monthLabel = `${MONTHS[view.getMonth()]} ${view.getFullYear()}`;
 
   return (
-    <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center px-4 sm:px-6 py-4 sm:py-6">
-      <div className="relative w-full max-w-[1200px] bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+    <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center overflow-x-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="relative card-canvas w-[1123px] h-[632px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
         <SiteHeader />
 
-        <section className="flex-1 px-6 sm:px-12 pt-6 pb-10">
+        <section className="flex-1 min-h-0 overflow-y-auto px-6 sm:px-12 pt-6 pb-10">
           <div className="max-w-[820px] mx-auto rounded-2xl bg-white ring-1 ring-[#15803d]/40 px-5 pt-3 pb-5">
             <div className="flex items-center justify-between mb-3">
               <button

@@ -65,8 +65,8 @@ export default function DocumentVaultPage() {
   }
 
   return (
-    <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center px-4 sm:px-6 py-4 sm:py-6">
-      <div className="relative w-full max-w-[1200px] bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+    <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center overflow-x-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="relative card-canvas w-[1123px] h-[632px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
         <SiteHeader />
 
         {/* Decorative background watermark */}
@@ -76,7 +76,7 @@ export default function DocumentVaultPage() {
           style={{ backgroundImage: "url('/document-vault-bg.webp')" }}
         />
 
-        <section className="relative flex-1 px-6 sm:px-12 pt-6 pb-10">
+        <section className="relative flex-1 min-h-0 overflow-y-auto px-6 sm:px-12 pt-6 pb-10">
           <div className="mb-6 flex items-start justify-between gap-4">
             <div>
               <h1 className="text-[28px] sm:text-[32px] font-extrabold tracking-[-0.02em] text-neutral-900">

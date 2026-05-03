@@ -4,7 +4,7 @@ import SiteHeader from "./components/SiteHeader";
 export default function Home() {
  return (
  <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center overflow-x-auto px-4 sm:px-6 py-4 sm:py-6 transition-colors">
- <div className="relative card-canvas w-[1080px] h-[608px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ <div className="relative card-canvas w-[1123px] h-[632px] shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
  {/* Ship background — overflows card edges for that dramatic crop */}
  <Image
  src="/hero-ship.webp"
@@ -13,23 +13,18 @@ export default function Home() {
  height={1640}
  priority
  aria-hidden
- className="pointer-events-none select-none hidden md:block absolute z-0 w-auto
-            md:right-[-15%] md:bottom-[-20%] md:h-[125%]
-            lg:right-[-10%] lg:bottom-[-18%] lg:h-[130%]
-            xl:right-[-8%] xl:bottom-[-15%] xl:h-[135%]
-            2xl:right-[-6%] 2xl:bottom-[-12%] 2xl:h-[140%]
-            max-h-[1500px]"
+ className="pointer-events-none select-none absolute z-0 w-auto right-[-10%] bottom-[-18%] h-[130%]"
  />
 
  <div className="relative flex-1 flex flex-col">
  <SiteHeader />
 
  {/* Hero text — left-anchored over the ship */}
- <section className="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-12 pb-8">
+ <section className="relative z-10 flex-1 flex flex-col justify-center px-12 pb-8">
  <span className="inline-block text-[14px] font-medium text-neutral-500 fade-in-up fade-in-up-1">
  Sailing Trust Across Every Ocean
  </span>
- <h1 className="mt-2 max-w-[640px] text-[48px] sm:text-[64px] xl:text-[72px] leading-[1.18] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
+ <h1 className="mt-2 max-w-[640px] text-[64px] leading-[1.18] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
  Your <span className="sweep-text">Trusted</span>{" "}
  <span className="relative inline-block">
  Maritime
