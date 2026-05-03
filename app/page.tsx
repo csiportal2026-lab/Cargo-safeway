@@ -1,65 +1,115 @@
 import Image from "next/image";
+import SiteHeader from "./components/SiteHeader";
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+ return (
+ <main className="h-screen w-full bg-[#f3f4f6] flex items-stretch justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
+ <div className="relative w-full max-w-[1200px] bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ {/* Ship background — spans the entire card */}
+ <Image
+ src="/hero-ship.webp"
+ alt=""
+ width={2000}
+ height={1640}
+ priority
+ aria-hidden
+ className="pointer-events-none select-none absolute right-[-180px] bottom-[-250px] w-auto h-[160%] max-h-[1400px] z-0 opacity-100"
+ />
+ {/* Header + Hero wrapper */}
+ <div className="relative flex-1 flex flex-col">
+
+ <SiteHeader />
+
+ {/* Hero */}
+ <section className="relative z-10 flex-1 px-6 sm:px-12 pt-8 pb-6 text-left">
+ <span className="inline-block text-[14px] font-medium text-neutral-500 fade-in-up fade-in-up-1">
+ Sailing Trust Across Every Ocean
+ </span>
+ <h1 className="mt-0 max-w-[640px] text-[48px] sm:text-[72px] leading-[1.18] font-extrabold tracking-[-0.02em] text-neutral-900 fade-in-up fade-in-up-2">
+ Your <span className="sweep-text">Trusted</span>{" "}
+ <span className="relative inline-block">
+ Maritime
+ <svg
+ aria-hidden
+ viewBox="0 0 220 60"
+ className="absolute left-0 right-0 -bottom-4 w-full h-[36px] text-[#15803d] overflow-visible"
+ preserveAspectRatio="none"
+ >
+ <path
+ d="M6 52 Q 110 4 214 52"
+ stroke="currentColor"
+ strokeWidth="14"
+ strokeLinecap="round"
+ fill="none"
+ />
+ </svg>
+ </span>
+ <br />
+ Partner
+ </h1>
+ <ul className="mt-8 space-y-2.5 max-w-[360px] fade-in-up fade-in-up-3">
+ {[
+ "Filipino crews",
+ "Global routes",
+ "Zero compromises",
+ "Powering 197 vessels",
+ ].map((line, i) => (
+ <li
+ key={i}
+ className="flex items-center gap-3 text-[17px] font-semibold"
+ >
+ <span
+ aria-hidden
+ className="grid h-6 w-6 place-items-center rounded-full bg-[#15803d] text-white shadow-sm"
+ >
+ <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+ <path
+ className="check-draw"
+ style={{ animationDelay: `${1100 + i * 250}ms` }}
+ d="M5 12.5 10 17 19 7"
+ stroke="currentColor"
+ strokeWidth="3"
+ strokeLinecap="round"
+ strokeLinejoin="round"
+ />
+ </svg>
+ </span>
+ <span className="tracking-[-0.01em] text-neutral-800">
+ {line}
+ </span>
+ </li>
+ ))}
+ </ul>
+ </section>
+ </div>
+
+ </div>
+ </main>
+ );
+}
+
+function IconAddress() {
+ return (
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="mt-0.5 shrink-0 text-[#15803d]" aria-hidden>
+ <path d="M12 22s7-7.58 7-13a7 7 0 1 0-14 0c0 5.42 7 13 7 13z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+ <circle cx="12" cy="9" r="2.5" stroke="currentColor" strokeWidth="1.6" />
+ </svg>
+ );
+}
+
+function IconPhone() {
+ return (
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0 text-[#15803d]" aria-hidden>
+ <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+ </svg>
+ );
+}
+
+function IconMail() {
+ return (
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0 text-[#15803d]" aria-hidden>
+ <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
+ <path d="m3 7 9 6 9-6" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+ </svg>
+ );
 }

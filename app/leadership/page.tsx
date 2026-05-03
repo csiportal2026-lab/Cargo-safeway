@@ -1,0 +1,72 @@
+import Image from "next/image";
+import SiteHeader from "../components/SiteHeader";
+
+export default function AboutPage() {
+ return (
+ <main className="h-screen w-full bg-[#f3f4f6] flex items-stretch justify-center px-4 sm:px-6 py-4 sm:py-6 transition-colors">
+ <div className="relative w-full max-w-[1200px] bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
+ <SiteHeader />
+
+ <section className="relative z-10 flex-1 min-h-0 px-6 sm:px-12 pb-10 pt-2 overflow-y-auto">
+ <div className="grid grid-cols-1 lg:grid-cols-[minmax(280px,420px)_1fr] gap-8 lg:gap-12 items-center h-full">
+ {/* CEO portrait — appears centered, then slides left */}
+ <div className="relative mx-auto lg:mx-0 w-full max-w-[400px] z-10 about-split">
+ <Image
+ src="/ceo.webp"
+ alt="Reynaldo D. Casareo, President"
+ width={900}
+ height={900}
+ priority
+ className="w-full aspect-square object-cover object-top"
+ />
+ </div>
+
+ {/* Message — reveals from behind, paragraphs blur-in */}
+ <div className="relative z-0 form-reveal">
+ <h1 className="text-[clamp(28px,4vw,48px)] leading-[1.05] font-extrabold tracking-[-0.025em] text-neutral-900">
+ Built on <span className="sweep-text">Trust</span>.
+ <br />
+ Powered by People.
+ </h1>
+
+ <div className="mt-5 space-y-3 text-[clamp(13px,1.05vw,14.5px)] leading-[1.65] text-neutral-700 max-w-[560px]">
+ <p className="blur-in-1">
+ Cargo Safeway began with a single conviction — that the
+ Filipino seafarer is among the finest in the world, and
+ deserves a manning partner that meets that standard in every
+ detail.
+ </p>
+ <p className="blur-in-2">
+ Over the years, we have grown from a standard manning agency
+ into a specialized partner for high-tier shipping lines,
+ focusing on the deployment of skilled Filipino crew aboard
+ container ships and bulk carriers. That growth has only ever
+ meant one thing to me: more lives entrusted to our care, and
+ a higher standard to live up to.
+ </p>
+ <p className="blur-in-3">
+ To the principals who place their fleets in our hands, and to
+ the seafarers who carry our name across every ocean — thank
+ you. We sail because of you.
+ </p>
+ </div>
+
+ <div className="mt-6 flex items-center gap-4 blur-in-4">
+ <span
+ className="text-[28px] font-medium text-[#15803d]"
+ style={{ fontFamily: "'Brush Script MT', cursive" }}
+ >
+ R. D. Casareo
+ </span>
+ <span className="h-px w-10 bg-neutral-300" />
+ <span className="text-[12px] text-neutral-500">
+ Reynaldo D. Casareo, President
+ </span>
+ </div>
+ </div>
+ </div>
+ </section>
+ </div>
+ </main>
+ );
+}
