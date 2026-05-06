@@ -19,25 +19,12 @@ export default function SiteHeader() {
   const onPortal = pathname?.startsWith("/portal");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [iconHint, setIconHint] = useState<"search" | "login">("search");
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (searchOpen) inputRef.current?.focus();
   }, [searchOpen]);
-
-  // Cycle the search-button icon. Search icon stays visible for 5s,
-  // login hint flashes for 2s, then back to search. Loops.
-  // Only runs while the search box is closed and we're not on the portal.
-  useEffect(() => {
-    if (searchOpen || onPortal) return;
-    const delay = iconHint === "search" ? 5000 : 2000;
-    const id = window.setTimeout(() => {
-      setIconHint((h) => (h === "search" ? "login" : "search"));
-    }, delay);
-    return () => window.clearTimeout(id);
-  }, [searchOpen, onPortal, iconHint]);
 
   function tryLoginRedirect(query: string) {
     const normalized = query.trim().toLowerCase();
@@ -71,7 +58,14 @@ export default function SiteHeader() {
   }, [searchOpen]);
 
   return (
-    <header className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-6 md:px-12 pt-4 sm:pt-5 pb-3 sm:pb-4">
+    <header
+      className="relative z-10 flex items-center justify-between gap-3"
+      style={{
+        paddingInline: "clamp(1rem, 4vw, 4rem)",
+        paddingTop: "var(--space-4)",
+        paddingBottom: "var(--space-3)",
+      }}
+    >
       <Link href="/" className="flex items-center gap-3 shrink-0">
         <Image
           src="/logo-cs.png"
@@ -79,10 +73,18 @@ export default function SiteHeader() {
           width={64}
           height={64}
           priority
-          className="h-9 w-9 sm:h-10 sm:w-10 object-contain"
+          className="object-contain"
+          style={{ width: "clamp(2.25rem, 2vw + 1rem, 3rem)", height: "clamp(2.25rem, 2vw + 1rem, 3rem)" }}
         />
         <span className="hidden sm:flex flex-col leading-tight">
-          <span className="text-[20px] sm:text-[22px] font-bold tracking-tight text-neutral-900">
+          <span
+            className={`font-bold tracking-tight ${
+              onHome
+                ? "text-neutral-900 lg:text-transparent lg:bg-clip-text lg:bg-gradient-to-b lg:from-white lg:to-emerald-400"
+                : "text-neutral-900"
+            }`}
+            style={{ fontSize: "var(--fs-xl)" }}
+          >
             Cargo Safeway
           </span>
           {onPortal && (
@@ -95,9 +97,11 @@ export default function SiteHeader() {
 
       {onPortal && <PortalTopNav />}
 
-      <nav className={`${onPortal ? "hidden" : "hidden md:flex"} absolute left-1/2 -translate-x-1/2 items-center gap-9 text-[13px] font-medium text-neutral-700`}>
+      <nav
+        className={`${onPortal ? "hidden" : "hidden md:flex"} lg:absolute lg:left-1/2 lg:-translate-x-1/2 items-center font-medium text-neutral-700`}
+        style={{ gap: "clamp(1.5rem, 2.5vw, 3rem)", fontSize: "var(--fs-sm)" }}
+      >
         {[
-          { label: "Fleet", href: "/fleet" },
           { label: "Leadership", href: "/leadership" },
           { label: "Find Us", href: "/contact" },
         ].map((item) =>
@@ -106,10 +110,8 @@ export default function SiteHeader() {
               key={item.label}
               href={item.href}
               aria-current={pathname === item.href ? "page" : undefined}
-              className={`relative transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#15803d] after:transition-all after:duration-200 ${
-                pathname === item.href
-                  ? "text-[#15803d] after:w-full"
-                  : "text-neutral-700 hover:text-[#15803d] after:w-0 hover:after:w-full"
+              className={`${onHome ? "hero-on-dark" : ""} sweep-text relative inline-block origin-center transition-transform duration-300 ease-out after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#22c55e] after:transition-all after:duration-200 ${
+                pathname === item.href ? "scale-125 after:w-full" : "after:w-0 hover:after:w-full"
               }`}
             >
               {item.label}
@@ -117,7 +119,7 @@ export default function SiteHeader() {
           ) : (
             <span
               key={item.label}
-              className="relative cursor-pointer text-neutral-700 transition-colors hover:text-[#15803d] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#15803d] after:transition-all after:duration-200 hover:after:w-full"
+              className={`${onHome ? "hero-on-dark" : ""} sweep-text relative cursor-pointer after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#22c55e] after:transition-all after:duration-200 hover:after:w-full`}
             >
               {item.label}
             </span>
@@ -173,8 +175,14 @@ export default function SiteHeader() {
                 }
                 setSearchOpen((s) => !s);
               }}
-              className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-neutral-700 transition-colors ${
-                searchOpen ? "hover:text-[#15803d]" : "hover:bg-neutral-100"
+              className={`grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors ${
+                onHome ? "text-white/90 hover:text-emerald-300" : "text-neutral-700"
+              } ${
+                searchOpen
+                  ? "hover:text-[#15803d]"
+                  : onHome
+                    ? "hover:bg-white/10"
+                    : "hover:bg-neutral-100"
               }`}
             >
               {searchOpen && searchQuery ? (
@@ -187,47 +195,36 @@ export default function SiteHeader() {
                   />
                 </svg>
               ) : (
-                <span className="relative grid place-items-center w-4 h-4">
-                  {/* Search icon */}
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    aria-hidden
-                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                      iconHint === "search" ? "opacity-100" : "opacity-0"
-                    }`}
-                  >
-                    <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
-                    <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                  </svg>
-                  {/* Login (person) icon */}
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    aria-hidden
-                    className={`absolute -inset-[1px] transition-opacity duration-700 ease-in-out ${
-                      iconHint === "login" ? "opacity-100" : "opacity-0"
-                    }`}
-                  >
-                    <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8" />
-                    <path
-                      d="M4 20c1.5-3.5 4.7-5.5 8-5.5s6.5 2 8 5.5"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
               )}
             </button>
           </div>
         </div>
-        {/* Login icon intentionally hidden from public nav.
-            Type "login" / "portal" / "sign in" in the search box to access. */}
+        {!onPortal && (
+          <Link
+            href="/login"
+            aria-label="Log in"
+            aria-current={pathname === "/login" ? "page" : undefined}
+            className={`hidden md:grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors ${
+              onHome
+                ? "text-white/90 hover:text-emerald-300 hover:bg-white/10"
+                : "text-neutral-700 hover:bg-neutral-100"
+            } ${pathname === "/login" ? "text-[#15803d]" : ""}`}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8" />
+              <path
+                d="M4 20c1.5-3.5 4.7-5.5 8-5.5s6.5 2 8 5.5"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+              />
+            </svg>
+          </Link>
+        )}
         {onPortal ? (
           <Link
             href="/"

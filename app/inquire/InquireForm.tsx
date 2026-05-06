@@ -260,18 +260,24 @@ export default function InquireForm() {
         <div>
           <label
             htmlFor="years"
-            className="block text-[12.5px] font-medium text-neutral-700 mb-1.5"
+            className="block font-medium text-neutral-700"
+            style={{ fontSize: "clamp(0.75rem, 0.5vw + 0.6rem, 1rem)", marginBottom: "var(--space-1)" }}
           >
             Years at Sea
             <span className="ml-0.5 text-[#15803d]">*</span>
           </label>
           <label
             htmlFor="years"
-            className={`flex items-center w-full cursor-text rounded-xl bg-white border px-4 py-3 transition-colors ${
+            className={`flex items-center w-full cursor-text bg-white border transition-colors ${
               years.length > 0
                 ? "border-emerald-400/80 focus-within:border-emerald-500"
                 : "border-neutral-200 focus-within:border-neutral-400"
             }`}
+            style={{
+              borderRadius: "clamp(0.625rem, 0.5vw + 0.5rem, 0.875rem)",
+              paddingInline: "clamp(0.875rem, 0.5vw + 0.7rem, 1.125rem)",
+              paddingBlock: "clamp(0.625rem, 0.4vw + 0.5rem, 0.875rem)",
+            }}
           >
             <input
               id="years"
@@ -286,10 +292,11 @@ export default function InquireForm() {
               value={years}
               onChange={(e) => setYears(e.target.value.replace(/\D/g, ""))}
               style={{ fieldSizing: "content" } as React.CSSProperties}
-              className="min-w-[1ch] bg-transparent text-[13.5px] font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none border-0"
+              className="min-w-[1ch] bg-transparent font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none border-0"
+              style={{ fontSize: "clamp(0.875rem, 0.5vw + 0.7rem, 1.25rem)" }}
             />
             {years && (
-              <span className="ml-0.5 text-[13.5px] font-semibold text-[#15803d]">
+              <span className="ml-0.5 font-semibold text-[#15803d]" style={{ fontSize: "clamp(0.875rem, 0.5vw + 0.7rem, 1.25rem)" }}>
                 {years === "1" ? "year" : "years"}
               </span>
             )}
@@ -314,11 +321,17 @@ export default function InquireForm() {
             value={position}
             onChange={(e) => setPosition(e.target.value)}
             disabled={isBusy}
-            className={`w-full appearance-none rounded-xl bg-white border px-4 py-3 text-[13.5px] font-semibold text-neutral-900 outline-none pr-10 disabled:opacity-60 invalid:text-neutral-400 invalid:font-normal transition-colors ${
+            className={`w-full appearance-none bg-white border font-semibold text-neutral-900 outline-none pr-10 disabled:opacity-60 invalid:text-neutral-400 invalid:font-normal transition-colors ${
               position
                 ? "border-emerald-400/80 focus:border-emerald-500"
                 : "border-neutral-200 focus:border-neutral-400"
             }`}
+            style={{
+              borderRadius: "clamp(0.625rem, 0.5vw + 0.5rem, 0.875rem)",
+              paddingInline: "clamp(0.875rem, 0.5vw + 0.7rem, 1.125rem)",
+              paddingBlock: "clamp(0.625rem, 0.4vw + 0.5rem, 0.875rem)",
+              fontSize: "clamp(0.875rem, 0.5vw + 0.7rem, 1.25rem)",
+            }}
           >
             <option value="" disabled>
               e.g. Third Engineer
@@ -388,13 +401,19 @@ export default function InquireForm() {
              const next = e.target.value.replace(/\D/g, "").slice(0, 2);
              setAge(next);
            }}
-           className={`w-full rounded-xl bg-white border px-4 py-3 text-[13.5px] font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none disabled:opacity-60 transition-colors ${
+           className={`w-full bg-white border font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none disabled:opacity-60 transition-colors ${
              age.length === 0
                ? "border-neutral-200 focus:border-neutral-400"
                : isAgeValid
                  ? "border-emerald-400/80 focus:border-emerald-500"
                  : "border-rose-300/80 focus:border-rose-400"
            }`}
+           style={{
+             borderRadius: "clamp(0.625rem, 0.5vw + 0.5rem, 0.875rem)",
+             paddingInline: "clamp(0.875rem, 0.5vw + 0.7rem, 1.125rem)",
+             paddingBlock: "clamp(0.625rem, 0.4vw + 0.5rem, 0.875rem)",
+             fontSize: "clamp(0.875rem, 0.5vw + 0.7rem, 1.25rem)",
+           }}
          />
        </div>
       </div>
@@ -417,7 +436,14 @@ export default function InquireForm() {
             placeholder="e.g. 8 years on container vessels, BOSIET certified, last contract on a 14,000-TEU box ship..."
             disabled={isBusy}
             rows={2}
-            className="w-full resize-none rounded-xl bg-white border border-neutral-200 px-4 py-3 pr-10 text-[13.5px] font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none focus:border-neutral-400 disabled:opacity-60"
+            className="w-full resize-none bg-white border border-neutral-200 font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none focus:border-neutral-400 disabled:opacity-60"
+            style={{
+              borderRadius: "clamp(0.625rem, 0.5vw + 0.5rem, 0.875rem)",
+              paddingInline: "clamp(0.875rem, 0.5vw + 0.7rem, 1.125rem)",
+              paddingBlock: "clamp(0.625rem, 0.4vw + 0.5rem, 0.875rem)",
+              paddingRight: "2.5rem",
+              fontSize: "clamp(0.875rem, 0.5vw + 0.7rem, 1.25rem)",
+            }}
           />
           <button
             type="button"
@@ -756,7 +782,11 @@ function FormField({
     <div>
       <label
         htmlFor={name}
-        className="block text-[12.5px] font-medium text-neutral-700 mb-1.5"
+        className="block font-medium text-neutral-700"
+        style={{
+          fontSize: "var(--fs-xs)",
+          marginBottom: "var(--space-1)",
+        }}
       >
         {label}
         {required && <span className="ml-0.5 text-[#15803d]">*</span>}
@@ -773,10 +803,24 @@ function FormField({
         maxLength={maxLength}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
-        className={`w-full rounded-xl bg-white border ${borderCls} px-4 py-3 text-[13.5px] font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none disabled:opacity-60 transition-colors`}
+        className={`w-full bg-white border ${borderCls} font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none disabled:opacity-60 transition-colors`}
+        style={{
+          borderRadius: "clamp(0.625rem, 0.5vw + 0.5rem, 0.875rem)",
+          paddingInline: "clamp(0.875rem, 0.5vw + 0.7rem, 1.125rem)",
+          paddingBlock: "clamp(0.625rem, 0.4vw + 0.5rem, 0.875rem)",
+          fontSize: "clamp(0.875rem, 0.5vw + 0.7rem, 1.25rem)",
+        }}
       />
       {helper && (
-        <p className="mt-1 text-[11px] leading-snug text-neutral-500">{helper}</p>
+        <p
+          className="leading-snug text-neutral-500"
+          style={{
+            marginTop: "var(--space-1)",
+            fontSize: "clamp(0.6875rem, 0.4vw + 0.55rem, 0.9375rem)",
+          }}
+        >
+          {helper}
+        </p>
       )}
     </div>
   );

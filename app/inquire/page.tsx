@@ -3,9 +3,9 @@ import InquireForm from "./InquireForm";
 
 export default function InquirePage() {
  return (
- <main className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center px-4 sm:px-6 py-4 sm:py-6">
- <div className="relative card-canvas w-full max-w-[1200px] lg:w-[1123px] lg:h-[632px] lg:shrink-0 bg-white rounded-3xl shadow-[0_2px_30px_-10px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col transition-colors">
- {/* Hairline navigational grid — chart aesthetic, consistent with Fleet & Find Us */}
+ <main className="min-h-screen w-full flex items-stretch justify-stretch">
+ <div className="relative card-canvas w-full bg-white overflow-hidden flex flex-col transition-colors">
+ {/* Hairline navigational grid — chart aesthetic, consistent with Find Us */}
  <svg
  aria-hidden
  className="pointer-events-none absolute inset-0 z-0 w-full h-full"
@@ -21,17 +21,37 @@ export default function InquirePage() {
  </svg>
  <SiteHeader />
 
- <section className="relative z-10 flex-1 px-6 sm:px-12 pb-14 pt-0">
- <div className="rounded-3xl bg-white p-2 sm:p-4 pt-0">
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-stretch">
+ <section
+ className="relative z-10 flex-1 flex flex-col justify-center"
+ style={{
+ paddingInline: "clamp(1.25rem, 4vw, 4rem)",
+ paddingTop: "var(--space-2)",
+ paddingBottom: "var(--space-6)",
+ }}
+ >
+ <div className="bg-white">
+ <div
+ className="grid grid-cols-1 lg:grid-cols-2 items-stretch"
+ style={{ gap: "clamp(1.5rem, 3vw, 3rem)" }}
+ >
  {/* Left: form card */}
- <div className="rounded-3xl bg-white border border-[#15803d] p-5 sm:p-8 min-h-[470px] flex flex-col fade-in-up fade-in-up-1">
+ <div
+ className="bg-white border border-[#15803d] flex flex-col fade-in-up fade-in-up-1"
+ style={{
+ borderRadius: "clamp(1rem, 1.5vw, 1.5rem)",
+ padding: "clamp(1.25rem, 2vw, 2rem)",
+ minHeight: "clamp(28rem, 50dvh, 32rem)",
+ }}
+ >
  <InquireForm />
  </div>
 
  {/* Right: copy */}
- <div className="flex flex-col justify-center px-2 sm:px-4">
- <h1 className="text-[34px] sm:text-[42px] leading-[1.05] font-extrabold tracking-[-0.02em] text-neutral-900">
+ <div className="flex flex-col justify-center" style={{ paddingInline: "var(--space-2)" }}>
+ <h1
+ className="leading-[1.05] font-extrabold tracking-[-0.02em] text-neutral-900"
+ style={{ fontSize: "clamp(2rem, 4.5vw + 0.5rem, 5rem)" }}
+ >
  <span className="inline-block fade-in-up fade-in-up-1">Let&apos;s</span>{" "}
  <span className="inline-block fade-in-up fade-in-up-2">Chart</span>{" "}
  <span className="inline-block fade-in-up fade-in-up-3">Your</span>
@@ -42,7 +62,8 @@ export default function InquirePage() {
  <svg
  aria-hidden
  viewBox="0 0 220 60"
- className="absolute left-0 right-0 -bottom-4 w-[92%] h-[28px] text-[#15803d] overflow-visible"
+ className="absolute left-0 right-0 w-[92%] text-[#15803d] overflow-visible"
+ style={{ height: "0.5em", bottom: "-0.2em" }}
  preserveAspectRatio="none"
  >
  <path
@@ -57,7 +78,15 @@ export default function InquirePage() {
  </span>
  </h1>
 
- <p className="mt-6 max-w-[520px] text-[14px] leading-relaxed text-neutral-600 fade-in-up fade-in-up-6">
+ <p
+ className="text-neutral-600 fade-in-up fade-in-up-6"
+ style={{
+ marginTop: "var(--space-4)",
+ maxWidth: "min(60ch, 100%)",
+ fontSize: "clamp(0.9375rem, 0.6vw + 0.75rem, 1.25rem)",
+ lineHeight: 1.6,
+ }}
+ >
  Tell us about your seafaring experience and the position
  you&apos;re applying for. Our crewing team reviews each
  application individually.

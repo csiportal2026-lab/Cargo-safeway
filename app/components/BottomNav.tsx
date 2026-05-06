@@ -27,31 +27,25 @@ const ITEMS: NavItem[] = [
     ),
   },
   {
-    label: "Fleet",
-    href: "/fleet",
-    match: (p) => p.startsWith("/fleet"),
+    label: "About",
+    href: "/leadership",
+    match: (p) => p.startsWith("/leadership"),
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.7" />
         <path
-          d="M3 17h18l-1.6 3a1 1 0 0 1-.9.5H5.5a1 1 0 0 1-.9-.5L3 17z"
+          d="M5 20c1.4-3.4 4.2-5 7-5s5.6 1.6 7 5"
           stroke="currentColor"
           strokeWidth="1.7"
-          strokeLinejoin="round"
+          strokeLinecap="round"
         />
-        <path
-          d="M5 17V9l7-4 7 4v8"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinejoin="round"
-        />
-        <path d="M12 5v12" stroke="currentColor" strokeWidth="1.7" />
       </svg>
     ),
   },
   {
-    label: "About",
-    href: "/leadership",
-    match: (p) => p.startsWith("/leadership"),
+    label: "Log in",
+    href: "/login",
+    match: (p) => p === "/login",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
         <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.7" />

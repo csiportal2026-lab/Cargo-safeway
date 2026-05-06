@@ -5,6 +5,32 @@
   --foreground: #0a0a0a;
   --card: #ffffff;
   --brand: #2563ff;
+
+  /* Fluid typography scale — clamp(min, preferred, max) so text scales
+     smoothly with viewport. No breakpoint jumps. */
+  --fs-2xs: clamp(0.625rem, 0.4vw + 0.5rem, 0.75rem);   /* 10–12px */
+  --fs-xs: clamp(0.75rem, 0.4vw + 0.65rem, 0.875rem);   /* 12–14px */
+  --fs-sm: clamp(0.8125rem, 0.4vw + 0.7rem, 0.9375rem); /* 13–15px */
+  --fs-base: clamp(0.9375rem, 0.4vw + 0.8rem, 1.0625rem); /* 15–17px */
+  --fs-lg: clamp(1rem, 0.6vw + 0.85rem, 1.25rem);       /* 16–20px */
+  --fs-xl: clamp(1.125rem, 0.8vw + 0.9rem, 1.5rem);     /* 18–24px */
+  --fs-2xl: clamp(1.375rem, 1.5vw + 0.9rem, 2rem);      /* 22–32px */
+  --fs-3xl: clamp(1.75rem, 2vw + 1rem, 2.75rem);        /* 28–44px */
+  --fs-4xl: clamp(2rem, 2.6vw + 1.2rem, 3.5rem);        /* 32–56px */
+  --fs-display: clamp(2.25rem, 3.5vw + 1.2rem, 4.5rem); /* 36–72px */
+
+  /* Fluid spacing scale */
+  --space-1: clamp(0.25rem, 0.2vw + 0.2rem, 0.5rem);    /* 4–8 */
+  --space-2: clamp(0.5rem, 0.3vw + 0.4rem, 0.75rem);    /* 8–12 */
+  --space-3: clamp(0.75rem, 0.5vw + 0.55rem, 1.125rem); /* 12–18 */
+  --space-4: clamp(1rem, 0.8vw + 0.7rem, 1.5rem);       /* 16–24 */
+  --space-6: clamp(1.5rem, 1.2vw + 1rem, 2.5rem);       /* 24–40 */
+  --space-8: clamp(2rem, 1.8vw + 1.2rem, 3.5rem);       /* 32–56 */
+  --space-12: clamp(3rem, 2.5vw + 2rem, 5rem);          /* 48–80 */
+  --space-16: clamp(4rem, 3.5vw + 2.5rem, 7rem);        /* 64–112 */
+
+  /* Card surround / gutter */
+  --card-gutter: clamp(0px, 0.5vw, 8px);
 }
 
 @theme inline {
@@ -23,51 +49,41 @@ body {
   font-family: var(--font-jakarta), Arial, Helvetica, sans-serif;
 }
 
-/* Pixel-locked design canvas: card is 1123x632 internally,
-   scales as a single unit to fill the viewport on bigger screens.
-   Below the design size, stays at natural size (may scroll). */
-@media (min-width: 1024px) {
-  .card-canvas {
-    zoom: max(1, min(calc((100vw - 32px) / 1123), calc((100vh - 32px) / 632)));
-  }
-  /* Leadership uses a slightly larger design canvas (~8% less zoom)
-     so the CEO portrait and message text don't crowd the card. */
-  .card-canvas-leadership {
-    zoom: max(1, min(calc((100vw - 32px) / 1214), calc((100vh - 32px) / 683)));
-  }
-}
-
-/* Mobile: card goes edge-to-edge — borderless, no shadow, no surrounding padding.
-   Feels like a native mobile screen rather than a floating card. */
+/* === Fluid card layout ===
+   Card fills viewport at every size. Internal content uses clamp() and
+   container queries to scale smoothly. No breakpoint jumps, no zoom hacks. */
 @layer utilities {
-  @media (max-width: 1023px) {
+  .card-canvas.card-canvas {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: 100dvh;
+    /* Make this a container query root so inner components can respond
+       to the card's own width, not just the viewport. */
+    container-type: inline-size;
+    container-name: card;
+  }
+  body {
+    background: white;
+  }
+  main:has(> .card-canvas) {
+    padding: 0 !important;
+    background: white !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+
+  /* Mobile-only: bottom nav reserves 72px, header anchors to the
+     safe-area top (notch / Dynamic Island awareness). */
+  @media (max-width: 767px) {
     .card-canvas.card-canvas {
-      border-radius: 0;
-      box-shadow: none;
-      max-width: 100%;
-      /* Fill the viewport height so content can be distributed vertically.
-         Subtract bottom nav (72px) so content doesn't sit beneath it. */
       min-height: calc(100dvh - 72px);
     }
-    body {
-      background: white;
-    }
-    main {
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-      padding-top: 0 !important;
-      padding-bottom: 0 !important;
-      background: white !important;
-      align-items: stretch !important;
-      justify-content: flex-start !important;
-    }
-    /* Header anchors to the very top of the screen on mobile, with
-       safe-area-inset support so notched / Dynamic Island devices look right. */
     .card-canvas > div > header,
     .card-canvas > header {
       padding-top: max(env(safe-area-inset-top), 0.5rem) !important;
     }
-    /* Home card: lock to exact viewport height so it never scrolls on mobile */
     .card-canvas-locked.card-canvas-locked {
       height: calc(100dvh - 72px);
       min-height: calc(100dvh - 72px);
@@ -76,6 +92,18 @@ body {
     body:has(.card-canvas-locked) {
       overflow: hidden;
       height: 100dvh;
+    }
+  }
+
+  /* Tablet+ — locked-canvas pages (Home) fill the full viewport. */
+  @media (min-width: 768px) {
+    .card-canvas-locked.card-canvas-locked {
+      height: 100dvh;
+      min-height: 100dvh;
+      max-height: 100dvh;
+    }
+    body:has(.card-canvas-locked) {
+      overflow: hidden;
     }
   }
 }
@@ -439,6 +467,77 @@ body {
   }
 }
 
+/* Stat suffix appears with a particle burst when the count finishes. */
+@keyframes suffix-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.suffix-rise {
+  display: inline-block;
+  position: relative;
+  animation: suffix-pop 500ms cubic-bezier(0.34, 1.7, 0.5, 1) both;
+  animation-delay: 1.6s;
+}
+
+@keyframes particle-burst {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(calc(var(--tx) * 0.3), calc(var(--ty) * 0.3)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.4);
+  }
+}
+
+.burst-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 9999px;
+  /* Matches the seafarers stat's gold accent bar */
+  background: #b45309;
+  opacity: 0;
+  animation: particle-burst 750ms cubic-bezier(0.22, 0.7, 0.4, 1) both;
+  animation-delay: 1.7s;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+@media (min-width: 1024px) {
+  .burst-particle {
+    background: #fcd34d;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .suffix-rise,
+  .burst-particle {
+    animation: none !important;
+    opacity: 1;
+  }
+  .burst-particle {
+    opacity: 0;
+  }
+}
+
 .sweep-text {
   background-image: linear-gradient(
     90deg,
@@ -455,7 +554,20 @@ body {
   -webkit-background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  animation: sweep-shine 23s linear infinite;
+  animation: sweep-shine 60s linear infinite;
+}
+
+/* Light variant of sweep-text for hero on dark backgrounds — keeps the
+   shimmer animation but uses white as the base instead of near-black.
+   Applies at all viewport sizes since the hero photo is now full-bleed. */
+.hero-on-dark.sweep-text,
+.hero-on-dark .sweep-text {
+  background-image: none;
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  animation: none;
 }
 
 @keyframes dropdown-pop {
