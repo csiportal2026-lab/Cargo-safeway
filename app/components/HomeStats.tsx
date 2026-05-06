@@ -50,12 +50,9 @@ function CountUp({
   return <span className="tabular-nums">{n.toLocaleString()}</span>;
 }
 
-type Stat = {
-  kind: "number" | "text";
-  value: number | string;
-  suffix?: string;
-  label: string;
-};
+type Stat =
+  | { kind: "number"; value: number; suffix?: string; label: string }
+  | { kind: "text"; value: string; label: string };
 
 const STATS: Stat[] = [
   { kind: "number", value: 238, label: "Vessels Powered" },

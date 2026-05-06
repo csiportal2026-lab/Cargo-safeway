@@ -291,9 +291,8 @@ export default function InquireForm() {
               disabled={isBusy}
               value={years}
               onChange={(e) => setYears(e.target.value.replace(/\D/g, ""))}
-              style={{ fieldSizing: "content" } as React.CSSProperties}
+              style={{ fieldSizing: "content", fontSize: "clamp(0.875rem, 0.5vw + 0.7rem, 1.25rem)" } as React.CSSProperties}
               className="min-w-[1ch] bg-transparent font-semibold text-neutral-900 placeholder:font-normal placeholder:text-neutral-400 outline-none border-0"
-              style={{ fontSize: "clamp(0.875rem, 0.5vw + 0.7rem, 1.25rem)" }}
             />
             {years && (
               <span className="ml-0.5 font-semibold text-[#15803d]" style={{ fontSize: "clamp(0.875rem, 0.5vw + 0.7rem, 1.25rem)" }}>
