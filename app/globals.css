@@ -312,6 +312,82 @@ body {
   animation-delay: 1900ms;
 }
 
+/* Inline keyword emphasis: scale up + tint green at the peak,
+   then settle back. Each keyword sets its own animation-delay so
+   the pulses cascade through the paragraph. */
+@keyframes kw-emph {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.15);
+    color: #15803d;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.kw-emph {
+  display: inline-block;
+  animation: kw-emph 1800ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+
+/* Word entry: fades up from below. Per-element delay is set inline to
+   stagger across multiple words. */
+@keyframes word-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.word-fade-up {
+  display: inline-block;
+  animation: word-fade-up 800ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word-fade-up {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Vertical marquee — each column loops continuously upward.
+   Content list is duplicated in markup so translateY(-50%) returns
+   to a seamless start. Per-column duration set via --duration. */
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration, 40s) linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-vertical {
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kw-emph {
+    animation: none !important;
+    transform: none;
+  }
+}
+
 @keyframes about-split {
   0% {
     opacity: 0;
@@ -631,3 +707,72 @@ body {
   -webkit-text-fill-color: transparent;
   animation: sweep-shine 14s linear infinite;
 }
+
+/* ─────────── Rotating yellow ring (Apply Now button) ───────────
+ * Conic-gradient drawn into the BORDER area of a button via the dual
+ * background-clip trick (padding-box for interior, border-box for the
+ * conic ring). The conic gradient's `from <angle>` is animated through
+ * a custom property registered with @property, so modern browsers can
+ * interpolate the angle and the bright segment of the ring visibly
+ * orbits the pill — without rotating the element itself (which would
+ * make the pill ends swing around).
+ */
+@property --apply-ring-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* The class goes on the BUTTON. A ::before pseudo-element carries the
+ * rotating conic-gradient and is masked so only the outer ring shows.
+ * Because the mask only affects the pseudo (not the button itself), the
+ * button's text and bg-transparent interior stay untouched and the section
+ * background bleeds through. */
+.apply-rotating-yellow {
+  position: relative;
+  isolation: isolate;
+}
+.apply-rotating-yellow::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  padding: 4px;
+  /* Whole ring stays visibly green — even if @property animation isn't
+     supported, you still see a solid green margin. The conic-gradient
+     adds a slight "head" / "tail" lightness shift that orbits the pill,
+     anchored on the Cargo Safeway brand green (#15803d) as the deep head. */
+  background: conic-gradient(
+    from var(--apply-ring-angle),
+    #86efac 0deg,
+    #22c55e 60deg,
+    #15803d 120deg,
+    #22c55e 240deg,
+    #86efac 300deg,
+    #86efac 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000, #000) content-box,
+    linear-gradient(#000, #000);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000, #000) content-box,
+    linear-gradient(#000, #000);
+  mask-composite: exclude;
+  z-index: -1;
+  pointer-events: none;
+  animation: apply-rotating-yellow-spin 3.2s linear infinite;
+}
+
+@keyframes apply-rotating-yellow-spin {
+  to {
+    --apply-ring-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apply-rotating-yellow {
+    animation: none;
+  }
+}
+

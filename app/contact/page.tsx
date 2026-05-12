@@ -21,7 +21,7 @@ export default function ContactPage() {
  const showEmail = view === "email";
  return (
  <main className="min-h-screen w-full flex items-stretch justify-stretch">
- <div className="relative card-canvas w-full bg-white overflow-hidden flex flex-col transition-colors">
+ <div className="relative card-canvas w-full bg-white flex flex-col transition-colors">
  {/* Interactive grid background — follows the cursor with a green spotlight */}
  <InteractiveGrid />
  <SiteHeader />

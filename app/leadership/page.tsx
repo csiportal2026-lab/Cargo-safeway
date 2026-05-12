@@ -4,7 +4,7 @@ import SiteHeader from "../components/SiteHeader";
 export default function AboutPage() {
  return (
  <main className="min-h-screen w-full flex items-stretch justify-stretch transition-colors">
- <div className="relative card-canvas w-full bg-white overflow-hidden flex flex-col transition-colors">
+ <div className="relative card-canvas w-full bg-white flex flex-col transition-colors">
  <SiteHeader />
 
  <section

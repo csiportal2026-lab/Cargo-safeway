@@ -43,22 +43,6 @@ const ITEMS: NavItem[] = [
     ),
   },
   {
-    label: "Log in",
-    href: "/login",
-    match: (p) => p === "/login",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.7" />
-        <path
-          d="M5 20c1.4-3.4 4.2-5 7-5s5.6 1.6 7 5"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-  },
-  {
     label: "Contact",
     href: "/contact",
     match: (p) => p.startsWith("/contact"),
@@ -79,17 +63,13 @@ const ITEMS: NavItem[] = [
 export default function BottomNav() {
   const pathname = usePathname() ?? "/";
 
-  // Hide on portal pages — they have their own nav model
-  if (pathname.startsWith("/portal")) return null;
-  if (pathname === "/login") return null;
-
   return (
     <nav
       aria-label="Primary"
       className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-neutral-200/80 bg-white/85 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <ul className="grid grid-cols-4 max-w-md mx-auto">
+      <ul className="grid grid-cols-3 max-w-md mx-auto">
         {ITEMS.map((item) => {
           const active = item.match(pathname);
           return (
