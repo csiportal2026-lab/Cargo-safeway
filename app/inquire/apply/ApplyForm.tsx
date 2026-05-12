@@ -12,6 +12,7 @@ import {
   type FieldPath,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DayPicker } from "react-day-picker";
 import AIQuickFill from "./AIQuickFill";
 import {
   applicationSchema,
@@ -760,6 +761,31 @@ export default function ApplyForm({ job }: { job: Job | null }) {
   // state holds the section number to pulse; cleared after the animation.
   const [pulseSection, setPulseSection] = useState<number | null>(null);
 
+  // Missing-fields popover next to the Review button. Click the alert icon
+  // to expand the list; click outside / Escape to dismiss.
+  const [missingPanelOpen, setMissingPanelOpen] = useState(false);
+  const missingPanelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!missingPanelOpen) return;
+    function onDocClick(e: MouseEvent) {
+      if (
+        missingPanelRef.current &&
+        !missingPanelRef.current.contains(e.target as Node)
+      ) {
+        setMissingPanelOpen(false);
+      }
+    }
+    function onEsc(e: KeyboardEvent) {
+      if (e.key === "Escape") setMissingPanelOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, [missingPanelOpen]);
+
   // Helper: scroll to a specific section + pulse its header. Used by both
   // the disabled-CTA click handler and the missing-fields banner.
   function jumpToSection(n: number) {
@@ -860,7 +886,7 @@ export default function ApplyForm({ job }: { job: Job | null }) {
                 </div>
                 {/* Birth */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <FloatField name="birthDate" label="Birth Date" type="date" />
+                  <DateField name="birthDate" label="Birth Date" />
                   <FloatField name="birthPlace" label="Birth Place" placeholder="e.g. Manila" />
                 </div>
                 {/* Demographic */}
@@ -1012,8 +1038,8 @@ export default function ApplyForm({ job }: { job: Job | null }) {
                   </div>
                   <FloatField name="eduDepartment" label="Department" optional placeholder="e.g. College" />
                   <FloatField name="eduDegree" label="Degree" placeholder="e.g. BS Marine Transportation" />
-                  <FloatField name="eduPeriodFrom" label="Period From" type="date" />
-                  <FloatField name="eduPeriodTo" label="Period To" type="date" />
+                  <DateField name="eduPeriodFrom" label="Period From" />
+                  <DateField name="eduPeriodTo" label="Period To" />
                 </div>
               </motion.section>
             )}
@@ -1036,8 +1062,8 @@ export default function ApplyForm({ job }: { job: Job | null }) {
                   </div>
                   <FloatField name="trainingDepartment" label="Department" optional placeholder="e.g. Cadetship" />
                   <FloatField name="trainingDegree" label="Degree / Cert" optional placeholder="e.g. STCW Advanced Fire Fighting" />
-                  <FloatField name="trainingPeriodFrom" label="Period From" type="date" optional />
-                  <FloatField name="trainingPeriodTo" label="Period To" type="date" optional />
+                  <DateField name="trainingPeriodFrom" label="Period From" optional />
+                  <DateField name="trainingPeriodTo" label="Period To" optional />
                 </div>
               </motion.section>
             )}
@@ -1089,8 +1115,8 @@ export default function ApplyForm({ job }: { job: Job | null }) {
                       <FloatField name="nativeCocCapacity" label="Capacity" optional placeholder="e.g. III/4 (ENG)" />
                       <FloatField name="nativeCocNumber" label="Number" optional placeholder="e.g. ANW2132132131" />
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <FloatField name="nativeCocDateIssued" label="Date Issued" type="date" optional />
-                        <FloatField name="nativeCocDateExpired" label="Date Expired" type="date" optional />
+                        <DateField name="nativeCocDateIssued" label="Date Issued" optional />
+                        <DateField name="nativeCocDateExpired" label="Date Expired" optional />
                       </div>
                     </div>
                     <div className="space-y-7">
@@ -1101,8 +1127,8 @@ export default function ApplyForm({ job }: { job: Job | null }) {
                       <FloatField name="otherCertCapacity" label="Capacity" optional placeholder="e.g. II/4 (DECK)" />
                       <FloatField name="otherCertNumber" label="Number" optional placeholder="e.g. RFP1332131231" />
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <FloatField name="otherCertDateIssued" label="Date Issued" type="date" optional />
-                        <FloatField name="otherCertDateExpired" label="Date Expired" type="date" optional />
+                        <DateField name="otherCertDateIssued" label="Date Issued" optional />
+                        <DateField name="otherCertDateExpired" label="Date Expired" optional />
                       </div>
                     </div>
                   </div>
@@ -1130,7 +1156,7 @@ export default function ApplyForm({ job }: { job: Job | null }) {
                   }
                 />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-16 gap-y-7">
-                  <FloatField name="medicalExamDate" label="Date Issued" type="date" />
+                  <DateField name="medicalExamDate" label="Date Issued" />
                 </div>
               </motion.section>
             )}
@@ -1164,8 +1190,8 @@ export default function ApplyForm({ job }: { job: Job | null }) {
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-5">
                         <FloatField name="seamansBookNumber" label="Number" placeholder="e.g. C1234567" />
-                        <FloatField name="seamansBookDateIssued" label="Date Issued" type="date" />
-                        <FloatField name="seamansBookDateExpired" label="Date Expired" type="date" />
+                        <DateField name="seamansBookDateIssued" label="Date Issued" />
+                        <DateField name="seamansBookDateExpired" label="Date Expired" />
                       </div>
                     </div>
                     <div>
@@ -1174,8 +1200,8 @@ export default function ApplyForm({ job }: { job: Job | null }) {
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-5">
                         <FloatField name="passportNumber" label="Number" placeholder="e.g. P5689123A" />
-                        <FloatField name="passportDateIssued" label="Date Issued" type="date" />
-                        <FloatField name="passportDateExpired" label="Date Expired" type="date" />
+                        <DateField name="passportDateIssued" label="Date Issued" />
+                        <DateField name="passportDateExpired" label="Date Expired" />
                       </div>
                     </div>
                     <div>
@@ -1185,8 +1211,8 @@ export default function ApplyForm({ job }: { job: Job | null }) {
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-5">
                         <FloatField name="usVisaNumber" label="Number" optional placeholder="e.g. 20240001" />
-                        <FloatField name="usVisaDateIssued" label="Date Issued" type="date" optional />
-                        <FloatField name="usVisaDateExpired" label="Date Expired" type="date" optional />
+                        <DateField name="usVisaDateIssued" label="Date Issued" optional />
+                        <DateField name="usVisaDateExpired" label="Date Expired" optional />
                       </div>
                     </div>
                   </div>
@@ -1298,43 +1324,6 @@ export default function ApplyForm({ job }: { job: Job | null }) {
 
         </div>
 
-        {/* "What's missing" banner — surfaces above the Review button so
-            users always see exactly which sections + fields are blocking
-            submission. Each section name is a "Jump →" link that scrolls
-            to it and pulses the header. Only renders on the final step. */}
-        {step === SECTIONS.length && !allReady && (
-          <div className="mt-8 rounded-2xl border border-rose-200 bg-rose-50/40 px-5 py-4">
-            <p className="text-[13px] font-semibold text-rose-700">
-              A few things still need attention before you can submit:
-            </p>
-            <ul className="mt-3 space-y-1.5">
-              {([1, 2, 3, 6, 7, 8, 9, 10, 11] as const)
-                .filter((n) => !sectionReady[n])
-                .map((n) => {
-                  const section = SECTIONS.find((s) => s.id === n);
-                  const missing = getSectionMissing(n);
-                  return (
-                    <li
-                      key={n}
-                      className="flex items-baseline gap-3 text-[12.5px] text-neutral-700"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => jumpToSection(n)}
-                        className="font-semibold text-[#15803d] hover:underline shrink-0"
-                      >
-                        {String(n).padStart(2, "0")} · {section?.title} →
-                      </button>
-                      <span className="text-neutral-500">
-                        {missing.length > 0 ? missing.join(", ") : "incomplete"}
-                      </span>
-                    </li>
-                  );
-                })}
-            </ul>
-          </div>
-        )}
-
         {/* Footer: auto-advance status for required sections, manual Skip on
             Training (optional), and final Review button on the last section.
             "Clear draft" sits on the left so the primary CTA stays right-aligned. */}
@@ -1368,6 +1357,78 @@ export default function ApplyForm({ job }: { job: Job | null }) {
 
           {/* Right-side controls cluster */}
           <div className="flex items-center gap-4">
+          {/* "What's missing" — clickable alert icon, only shown on the
+              final step when at least one required section is incomplete.
+              Click → popover lists incomplete sections with jump links. */}
+          {step === SECTIONS.length && !allReady && (() => {
+            const incomplete = ([1, 2, 3, 6, 7, 8, 9, 10, 11] as const).filter(
+              (n) => !sectionReady[n],
+            );
+            return (
+              <div ref={missingPanelRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setMissingPanelOpen((v) => !v)}
+                  aria-label={`${incomplete.length} section${incomplete.length === 1 ? "" : "s"} incomplete`}
+                  aria-expanded={missingPanelOpen}
+                  className="group inline-flex items-center gap-2 rounded-full border border-rose-300 bg-rose-50 px-3 py-2 text-[12px] font-semibold text-rose-700 hover:bg-rose-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 transition-colors"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+                    <path d="M12 7v6M12 16.5h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                  <span className="tabular-nums">{incomplete.length}</span>
+                </button>
+                <AnimatePresence>
+                  {missingPanelOpen && (
+                    <motion.div
+                      role="dialog"
+                      aria-label="Incomplete sections"
+                      initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute right-0 bottom-full mb-2 z-30 w-[320px] rounded-2xl border border-rose-200 bg-white p-4 shadow-[0_12px_36px_-8px_rgba(15,23,42,0.18),0_2px_8px_-4px_rgba(15,23,42,0.08)]"
+                    >
+                      <p className="text-[13px] font-semibold text-rose-700">
+                        A few things still need attention before you can
+                        submit:
+                      </p>
+                      <ul className="mt-3 space-y-2">
+                        {incomplete.map((n) => {
+                          const section = SECTIONS.find((s) => s.id === n);
+                          const missing = getSectionMissing(n);
+                          return (
+                            <li
+                              key={n}
+                              className="text-[12.5px] text-neutral-700"
+                            >
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  jumpToSection(n);
+                                  setMissingPanelOpen(false);
+                                }}
+                                className="font-semibold text-[#15803d] hover:underline"
+                              >
+                                {String(n).padStart(2, "0")} · {section?.title} →
+                              </button>
+                              <p className="mt-0.5 text-neutral-500 leading-snug">
+                                {missing.length > 0
+                                  ? missing.join(", ")
+                                  : "incomplete"}
+                              </p>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })()}
+
           {/* Final section: send-icon submission CTA */}
           {step === SECTIONS.length && (
             <span className="group relative inline-block">
@@ -1859,6 +1920,197 @@ function FloatField({
   );
 }
 
+/* ─────────── Date field with calendar popover ─────────── */
+/* Replaces native <input type="date"> across the form. The native picker
+ * is hard to use on tablets (small wheel scrollers, especially the month
+ * column). This uses react-day-picker with month/year dropdowns at the
+ * top so users can jump to any month in 2 taps. Stores the value in
+ * ISO YYYY-MM-DD to match the existing zod regex. */
+
+function DateField({
+  name,
+  label,
+  optional = false,
+}: {
+  name: FieldPath<ApplicationValues>;
+  label: string;
+  optional?: boolean;
+}) {
+  const {
+    register,
+    setValue,
+    formState: { errors, touchedFields, dirtyFields },
+    watch,
+  } = useFormContext<ApplicationValues>();
+  const value = (watch(name) as string | undefined) ?? "";
+  const error = (getByPath(errors, name) as { message?: string } | undefined)?.message;
+  const touched = !!getByPath(touchedFields, name);
+  const showError = !!error && (touched || !!value);
+  const filled = !!value;
+  const { fields: aiFields } = useAIFilled();
+  const isAi = aiFields.has(name) && !getByPath(dirtyFields, name);
+  const isMissing = useIsFieldMissing(name);
+
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Parse current ISO value into a Date for the picker.
+  const selectedDate =
+    value && /^\d{4}-\d{2}-\d{2}$/.test(value)
+      ? new Date(value + "T00:00:00")
+      : undefined;
+
+  // Friendly display string ("Jan 5, 1990" style).
+  const displayValue = selectedDate
+    ? selectedDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "";
+
+  // Click outside / Escape closes the popover.
+  useEffect(() => {
+    if (!open) return;
+    function onDocClick(e: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function onEsc(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, [open]);
+
+  function pickDate(d: Date | undefined) {
+    if (!d) {
+      setValue(name, "" as never, {
+        shouldValidate: true,
+        shouldTouch: true,
+        shouldDirty: true,
+      });
+      return;
+    }
+    // Local ISO without TZ shift (toISOString uses UTC).
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    setValue(name, `${y}-${m}-${day}` as never, {
+      shouldValidate: true,
+      shouldTouch: true,
+      shouldDirty: true,
+    });
+    setOpen(false);
+  }
+
+  return (
+    <div className="w-full" ref={wrapperRef}>
+      <label
+        htmlFor={name}
+        className={`block text-[12px] font-medium mb-1.5 ${
+          showError ? "text-rose-500" : "text-neutral-500"
+        }`}
+      >
+        {label}
+        {optional && (
+          <span className="ml-1.5 text-[11px] font-normal text-neutral-400">
+            (optional)
+          </span>
+        )}
+      </label>
+      <div className="relative">
+        <button
+          type="button"
+          id={name}
+          onClick={() => setOpen((v) => !v)}
+          className={`w-full flex items-center justify-between rounded-xl border px-5 py-4 text-[16px] leading-tight outline-none transition-all duration-200 text-left ${
+            isMissing
+              ? "bg-white border-2 border-red-500 focus:border-red-600 focus:ring-2 focus:ring-red-200"
+              : showError
+                ? "bg-white border-rose-300 focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
+                : isAi
+                  ? "bg-white border-2 border-violet-500 focus:border-violet-600 focus:ring-2 focus:ring-violet-200"
+                  : filled
+                    ? "bg-white border-[#15803d]/40 focus:border-[#15803d] focus:ring-2 focus:ring-[#15803d]/15"
+                    : "bg-white border-slate-300 focus:border-[#15803d] focus:ring-2 focus:ring-[#15803d]/15 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]"
+          }`}
+        >
+          <span className={filled ? "text-neutral-900" : "text-neutral-400"}>
+            {displayValue || "Select a date"}
+          </span>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden
+            className="text-neutral-500 shrink-0"
+          >
+            <rect
+              x="3"
+              y="5"
+              width="18"
+              height="16"
+              rx="2"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M3 10h18M8 3v4M16 3v4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+        {/* Hidden registered input keeps RHF aware of the field. */}
+        <input type="hidden" {...register(name)} />
+
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: -4, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -4, scale: 0.96 }}
+              transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute left-0 top-full mt-1.5 z-30 rounded-2xl border border-neutral-200 bg-white p-3 shadow-[0_12px_36px_-8px_rgba(15,23,42,0.18),0_2px_8px_-4px_rgba(15,23,42,0.08)]"
+            >
+              <DayPicker
+                mode="single"
+                selected={selectedDate}
+                onSelect={pickDate}
+                captionLayout="dropdown"
+                startMonth={new Date(1940, 0)}
+                endMonth={new Date(2050, 11)}
+                weekStartsOn={1}
+                modifiersStyles={{
+                  selected: {
+                    backgroundColor: "#15803d",
+                    color: "white",
+                  },
+                  today: {
+                    color: "#15803d",
+                    fontWeight: 700,
+                  },
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      {showError && (
+        <p className="mt-1.5 text-[11px] font-medium text-rose-500">{error}</p>
+      )}
+    </div>
+  );
+}
+
 /* ─────────── Boxed select dropdown ─────────── */
 
 function SelectField({
@@ -2206,15 +2458,13 @@ function ExperienceTable({ engineDept }: { engineDept: boolean }) {
                 />
               )}
 
-              <FloatField
+              <DateField
                 name={`experience.${idx}.periodFrom` as FieldPath<ApplicationValues>}
                 label="From"
-                type="date"
               />
-              <FloatField
+              <DateField
                 name={`experience.${idx}.periodTo` as FieldPath<ApplicationValues>}
                 label="To"
-                type="date"
               />
             </div>
           </motion.div>
@@ -2289,10 +2539,9 @@ function KindredTable({ married }: { married: boolean }) {
                 label="Full Name"
                 placeholder="e.g. Jose P. Santos"
               />
-              <FloatField
+              <DateField
                 name={`kindred.${idx}.birthDate` as FieldPath<ApplicationValues>}
                 label="Date of Birth"
-                type="date"
                 optional
               />
               <SelectField
